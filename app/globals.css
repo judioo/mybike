@@ -1,26 +1,191 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
+  /* Light theme colors - Bicycle industry inspired */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1a1a1a;
+
+  /* Brand colors - Professional cycling palette */
+  --primary: #2563eb; /* Strong blue - trust, reliability */
+  --primary-foreground: #ffffff;
+  --secondary: #f97316; /* Energy orange - speed, excitement */
+  --secondary-foreground: #ffffff;
+  --accent: #10b981; /* Green - eco-friendly, outdoor */
+  --accent-foreground: #ffffff;
+
+  /* Neutral palette */
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --border: #e2e8f0;
+  --input: #f1f5f9;
+
+  /* Status colors */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --success: #10b981;
+  --success-foreground: #ffffff;
+
+  /* Product-specific colors */
+  --preloved: #8b5cf6; /* Purple for used bikes */
+  --new: #10b981; /* Green for new bikes */
+  --sale: #ef4444; /* Red for sale items */
 }
 
 @theme inline {
+  /* Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-preloved: var(--preloved);
+  --color-new: var(--new);
+  --color-sale: var(--sale);
+
+  /* Typography - Professional and readable fonts */
+  --font-sans: 'Inter', 'Segoe UI', 'Roboto', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --font-heading: 'Inter', 'Segoe UI', system-ui, sans-serif;
+
+  /* Custom spacing scale - Optimized for e-commerce layouts */
+  --spacing-xs: 0.25rem; /* 4px */
+  --spacing-sm: 0.5rem; /* 8px */
+  --spacing-md: 1rem; /* 16px */
+  --spacing-lg: 1.5rem; /* 24px */
+  --spacing-xl: 2rem; /* 32px */
+  --spacing-2xl: 3rem; /* 48px */
+  --spacing-3xl: 4rem; /* 64px */
+  --spacing-product: 1.25rem; /* 20px - Product grid spacing */
+  --spacing-section: 5rem; /* 80px - Section spacing */
+
+  /* Border radius scale */
+  --radius-sm: 0.25rem; /* 4px */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+  --radius-xl: 1rem; /* 16px */
+  --radius-card: 0.75rem; /* Product cards */
+  --radius-button: 0.5rem; /* Buttons */
+
+  /* Shadows for e-commerce elements */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.08);
+  --shadow-product: 0 4px 12px 0 rgb(0 0 0 / 0.1);
+
+  /* Z-index scale */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
+    /* Dark theme colors */
     --background: #0a0a0a;
     --foreground: #ededed;
+    --primary: #3b82f6;
+    --secondary: #fb923c;
+    --accent: #34d399;
+    --muted: #1e293b;
+    --muted-foreground: #94a3b8;
+    --card: #1e293b;
+    --card-foreground: #ededed;
+    --border: #334155;
+    --input: #1e293b;
   }
 }
 
+/* Global styles */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom utility classes for bicycle e-commerce */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-product);
+}
+
+.section-spacing {
+  padding-top: var(--spacing-section);
+  padding-bottom: var(--spacing-section);
+}
+
+.card-hover {
+  transition: all 0.2s ease-in-out;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-product);
+}
+
+/* Focus styles for accessibility */
+.focus-ring {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Price display styles */
+.price-current {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.price-original {
+  text-decoration: line-through;
+  color: var(--muted-foreground);
+}
+
+.price-sale {
+  color: var(--sale);
+  font-weight: 600;
+}
+
+/* Status badges */
+.badge-new {
+  background-color: var(--new);
+  color: var(--success-foreground);
+}
+
+.badge-preloved {
+  background-color: var(--preloved);
+  color: var(--primary-foreground);
+}
+
+.badge-sale {
+  background-color: var(--sale);
+  color: var(--destructive-foreground);
 }

@@ -17,27 +17,23 @@
             "description": "Set up Prettier in the project to ensure consistent code formatting across the codebase.",
             "dependencies": [],
             "details": "Install Prettier and create a .prettierrc configuration file with project-specific rules. Add a .prettierignore file to exclude build and dependency directories. Integrate Prettier with the existing ESLint setup for seamless linting and formatting.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Run Prettier on sample files and verify formatting. Check that Prettier and ESLint do not conflict by running both tools on the same file."
           },
           {
             "id": 2,
             "title": "Set Up Husky for Pre-commit Hooks",
             "description": "Integrate Husky to enforce code quality checks before commits.",
-            "dependencies": [
-              1
-            ],
+            "dependencies": [1],
             "details": "Install Husky and configure it to run Prettier and ESLint checks on staged files before each commit. Optionally, add lint-staged for efficient pre-commit processing.",
-            "status": "pending",
+            "status": "in-progress",
             "testStrategy": "Attempt a commit with code that violates formatting or linting rules and verify that the commit is blocked until issues are resolved."
           },
           {
             "id": 3,
             "title": "Enhance ESLint Configuration for Production E-commerce Standards",
             "description": "Expand the ESLint ruleset to enforce best practices and security for a production-ready e-commerce application.",
-            "dependencies": [
-              1
-            ],
+            "dependencies": [1],
             "details": "Add or extend ESLint plugins (such as eslint-plugin-react, eslint-plugin-jsx-a11y, eslint-plugin-security, etc.). Configure rules for accessibility, security, and performance. Ensure TypeScript-specific linting is robust.",
             "status": "pending",
             "testStrategy": "Run ESLint on the codebase and verify that new rules are enforced. Intentionally introduce violations to confirm detection."
@@ -48,19 +44,14 @@
             "description": "Adjust Tailwind CSS configuration to support the custom design system for the bicycle e-commerce site.",
             "dependencies": [],
             "details": "Edit tailwind.config.js to define custom colors, fonts, spacing, and other design tokens. Add any necessary plugins for forms, typography, or custom utilities. Ensure the configuration supports responsive and accessible design.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Create sample components using the custom design tokens and verify correct styling in the browser."
           },
           {
             "id": 5,
             "title": "Integrate Additional Development Tooling",
             "description": "Add any other development tools that improve workflow and code quality for the team.",
-            "dependencies": [
-              1,
-              2,
-              3,
-              4
-            ],
+            "dependencies": [1, 2, 3, 4],
             "details": "Consider tools such as commitlint for commit message conventions, dotenv for environment variable management, and Storybook for UI component development. Set up initial configuration for each selected tool.",
             "status": "pending",
             "testStrategy": "Verify each tool is operational by running its basic workflow (e.g., commit with a non-conforming message for commitlint, load environment variables with dotenv, start Storybook and view a sample component)."
@@ -74,9 +65,7 @@
         "details": "Create Header, Footer, and Navigation components in 'src/components/layout'. Use Next.js Link component for internal navigation. Implement a responsive design using Tailwind CSS classes. Consider using 'next/font' for optimized font loading. Implement a dark mode toggle using next-themes library.\n<info added on 2025-06-16T19:58:10.476Z>\nThis task corresponds to Linear task MYB-11 (ID: d544bc1e-c837-4fc0-9542-1a23b46f7fa1). URL: https://linear.app/mybike/issue/MYB-11/implement-base-layout-components\n</info added on 2025-06-16T19:58:10.476Z>",
         "testStrategy": "Create unit tests for each component using Vitest. Test responsiveness using different viewport sizes. Ensure accessibility by running axe-core tests.",
         "priority": "high",
-        "dependencies": [
-          1
-        ],
+        "dependencies": [1],
         "status": "pending",
         "subtasks": []
       },
@@ -87,10 +76,7 @@
         "details": "Use NextAuth.js (v4.22.1) for authentication. Set up email/password and social login providers. Implement protected routes using Next.js middleware. Create login, register, and forgot password pages in 'src/app/(auth)'. Use bcrypt for password hashing. Implement JWT for session management.\n<info added on 2025-06-16T19:58:21.810Z>\nLinear Task: MYB-12 (ID: ebd312d9-9385-4df0-9aee-66442f079163)\nLinear URL: https://linear.app/mybike/issue/MYB-12/set-up-authentication-system\n</info added on 2025-06-16T19:58:21.810Z>",
         "testStrategy": "Write unit tests for authentication functions. Create integration tests for login, registration, and password reset flows. Test protected routes to ensure proper access control.",
         "priority": "high",
-        "dependencies": [
-          1,
-          2
-        ],
+        "dependencies": [1, 2],
         "status": "pending",
         "subtasks": []
       },
@@ -101,9 +87,7 @@
         "details": "Implement dynamic routing for category pages using '[category]' in the file name. Use React Server Components for improved performance. Implement server-side pagination. Use Zustand (v4.3.8) for client-side state management of filters and sorting. Integrate with a headless CMS like Contentful for product data management.\n<info added on 2025-06-16T19:58:32.280Z>\nLinear Task Reference: MYB-13 (ID: ea4b334b-4f08-43de-ac9b-7bc8f112422e)\nLinear URL: https://linear.app/mybike/issue/MYB-13/develop-product-catalog-and-category-pages\n</info added on 2025-06-16T19:58:32.280Z>\n<info added on 2025-06-18T08:23:30.097Z>\n## API Migration Requirements\n\nCRITICAL DISCOVERY: We need to migrate from the current wolfis.ae catalog API:\n\nAPI Endpoint: https://services.mybcapps.com/bc-sf-filter/filter?shop=wolfi-ae.myshopify.com&page=1&limit=30&sort=manual&display=grid&collection_scope=281610289213&product_available=false&variant_available=false&build_filter_tree=true&locale=en&callback=BoostPFSFilterCallback&event_type=filter\n\nTechnical specifications:\n- BoostCommerce Filter system (Shopify app)\n- JSONP callback format: BoostPFSFilterCallback()\n- Rich product data structure with variants, images, pricing\n- Advanced filtering system with 15+ filter types (size, color, price, material, speed, etc.)\n- Collection-based categorization\n- Supports pagination, sorting, availability filtering\n- Currency: AED (Arab Emirates Dirham)\n- Products include detailed specs, descriptions, media arrays\n- Filter tree structure for hierarchical browsing\n\nImplementation considerations:\n1. Analyze the existing data structure to ensure feature parity\n2. Design equivalent filtering capabilities in our Next.js architecture\n3. Ensure the new system supports all current filter types\n4. Implement hierarchical browsing through filter tree structures\n5. Account for currency handling (AED)\n6. Maintain support for rich product data including variants and specifications\n</info added on 2025-06-18T08:23:30.097Z>",
         "testStrategy": "Write unit tests for sorting and filtering logic. Create integration tests for category page rendering and dynamic routing. Test performance using Lighthouse in CI/CD pipeline.",
         "priority": "high",
-        "dependencies": [
-          2
-        ],
+        "dependencies": [2],
         "status": "pending",
         "subtasks": []
       },
@@ -114,9 +98,7 @@
         "details": "Use dynamic routing with '[slug]' for product pages. Implement image gallery using react-image-gallery (v1.2.12). Add schema markup for rich snippets. Implement 'Add to Cart' functionality. Use React Suspense and lazy loading for optimal performance. Consider implementing a 'Recently Viewed' feature using localStorage.\n<info added on 2025-06-16T19:58:50.806Z>\nThis task corresponds to Linear task MYB-14 (ID: 87a91abc-2ae8-4079-b98d-9dfc95202c9d). URL: https://linear.app/mybike/issue/MYB-14/build-product-detail-pages\n</info added on 2025-06-16T19:58:50.806Z>\n<info added on 2025-06-18T08:23:52.604Z>\nThe product detail pages must support the rich data structure from the wolfis.ae API. Implement handlers for:\n\n- Parsing and displaying body_html and specifications\n- Managing multiple image arrays (original_images, images_info) in the gallery\n- Building a variant selection system with inventory status indicators\n- Displaying pricing data with compare_at_price for sale indicators\n- Showing product collections and category breadcrumbs\n- Integrating the review system with review_count and review_ratings\n- Including SKU and barcode information in product metadata\n- Displaying weight and dimensional data in specifications\n- Supporting rich media arrays beyond standard images\n- Implementing template suffix support for custom product layouts\n- Adding condition rating display for preloved items (e.g., 4/5 condition)\n\nEnsure the data fetching layer can handle this complex structure and that UI components are flexible enough to adapt to varying product data completeness.\n</info added on 2025-06-18T08:23:52.604Z>",
         "testStrategy": "Create unit tests for product data rendering. Test image gallery functionality. Verify schema markup using Google's Structured Data Testing Tool. Perform e2e tests for the 'Add to Cart' flow.",
         "priority": "high",
-        "dependencies": [
-          4
-        ],
+        "dependencies": [4],
         "status": "pending",
         "subtasks": []
       },
@@ -127,9 +109,7 @@
         "details": "Use Zustand for cart state management. Implement cart persistence using localStorage. Create CartItem and CartSummary components. Add functionality for updating quantities and removing items. Implement a mini-cart for header. Use React Context for global cart state.\n<info added on 2025-06-16T20:01:14.203Z>\nThis task corresponds to Linear task MYB-15 (ID: 278a18ae-a115-40b3-b146-96242faa4b83). URL: https://linear.app/mybike/issue/MYB-15/implement-shopping-cart-functionality\n</info added on 2025-06-16T20:01:14.203Z>",
         "testStrategy": "Write unit tests for cart operations (add, remove, update). Create integration tests for cart persistence. Perform e2e tests for the entire shopping flow.",
         "priority": "high",
-        "dependencies": [
-          5
-        ],
+        "dependencies": [5],
         "status": "pending",
         "subtasks": []
       },
@@ -140,9 +120,7 @@
         "details": "Implement a multi-step form using react-hook-form (v7.44.3) for form management. Use Stripe (v12.9.0) for payment processing. Implement address validation using an API like Google Places. Create order summary component. Use React Context for managing checkout state across steps.\n<info added on 2025-06-16T20:01:19.779Z>\nLinear Task Reference: MYB-16 (ID: 327a04f7-5f4e-478a-ab26-c08cb272eff8)\nLinear URL: https://linear.app/mybike/issue/MYB-16/develop-checkout-process\n</info added on 2025-06-16T20:01:19.779Z>",
         "testStrategy": "Write unit tests for form validation logic. Create integration tests for each checkout step. Perform e2e tests for the entire checkout flow. Test Stripe integration in test mode.",
         "priority": "high",
-        "dependencies": [
-          6
-        ],
+        "dependencies": [6],
         "status": "pending",
         "subtasks": []
       },
@@ -153,10 +131,7 @@
         "details": "Use Algolia (v4.17.1) for search implementation. Create a search bar component with autocomplete. Implement server-side search API route. Add filtering options to search results page. Use debounce for search input to optimize API calls.\n<info added on 2025-06-16T20:01:33.575Z>\nLinear Task Reference: This task corresponds to Linear task MYB-17 (ID: c7b73f6d-e604-4817-a335-d6273178f110). URL: https://linear.app/mybike/issue/MYB-17/implement-search-functionality\n</info added on 2025-06-16T20:01:33.575Z>\n<info added on 2025-06-18T08:24:09.415Z>\nSEARCH SYSTEM REQUIREMENTS:\n\nImplement filtering capabilities matching wolfis.ae API:\n- Product Type filtering with support for \"Preloved\" tag\n- Price range filtering with slider interface for min/max values\n- Size filtering with multiple selection (49 Cm, 56 Cm, S)\n- Color filtering with multiple selection (Anthracite, Black, G3G2, Green)\n- Material filtering\n- Speed filtering\n- Brand/Vendor filtering\n- Collection-based filtering with support for multiple collections per product\n- Availability filtering (product_available, variant_available)\n- Sort options (manual, best_selling_rank, etc.)\n\nAdvanced features to implement:\n- Filter tree building functionality (build_filter_tree=true)\n- Search personalization and merchandising capabilities\n- Efficient cache management with cache validation parameter\n- Multi-locale support (starting with English)\n- Session tracking for user behavior analysis\n\nPerformance requirements:\n- Replace JSONP callback system with more efficient data transfer method\n- Implement proper caching strategy to reduce API calls\n- Ensure responsive UI during filtering operations\n</info added on 2025-06-18T08:24:09.415Z>",
         "testStrategy": "Write unit tests for search logic. Create integration tests for search API. Perform e2e tests for search flow including autocomplete and filtering. Test search performance with large datasets.",
         "priority": "medium",
-        "dependencies": [
-          4,
-          5
-        ],
+        "dependencies": [4, 5],
         "status": "pending",
         "subtasks": []
       },
@@ -167,9 +142,7 @@
         "details": "Use a headless CMS like Sanity.io for blog content management. Implement MDX for rich content formatting. Create BlogPost and BlogList components. Use static generation for blog pages. Implement pagination and category filtering. Add social sharing functionality.\n<info added on 2025-06-16T20:01:47.762Z>\nLinear Task Reference: MYB-18 (ID: 2dc0155b-865d-40e4-99cb-88792017c68b)\nLinear URL: https://linear.app/mybike/issue/MYB-18/migrate-blog-articles-and-implement-blog-platform\n</info added on 2025-06-16T20:01:47.762Z>",
         "testStrategy": "Verify successful content migration. Test rendering of various content types (text, images, embedded media). Check pagination and filtering functionality. Ensure proper SEO metadata for blog posts.",
         "priority": "medium",
-        "dependencies": [
-          2
-        ],
+        "dependencies": [2],
         "status": "pending",
         "subtasks": []
       },
@@ -180,9 +153,7 @@
         "details": "Create separate pages for each service. Implement a booking system using react-big-calendar (v1.6.9). Integrate with a scheduling API or use serverless functions for booking management. Create forms for service requests using react-hook-form.\n<info added on 2025-06-16T20:01:53.113Z>\nLinear Task Reference: MYB-19 (ID: a450489e-46ce-452f-8fb3-1ca6b336367f)\nLinear URL: https://linear.app/mybike/issue/MYB-19/develop-service-pages\n</info added on 2025-06-16T20:01:53.113Z>",
         "testStrategy": "Write unit tests for booking logic. Create integration tests for form submissions. Perform e2e tests for the booking flow. Test calendar functionality across different devices.",
         "priority": "medium",
-        "dependencies": [
-          2
-        ],
+        "dependencies": [2],
         "status": "pending",
         "subtasks": []
       },
@@ -193,10 +164,7 @@
         "details": "Create protected routes for user dashboard. Implement tabs for different sections (Orders, Profile, Preferences). Use SWR (v2.1.5) for data fetching and caching. Create components for OrderList, OrderDetail, ProfileForm, and PreferencesForm. Implement password change functionality.\n<info added on 2025-06-16T20:02:16.088Z>\nLinear Task: MYB-20 (ID: e9b8a983-7b11-4465-bb3f-f5941560888e)\nLinear URL: https://linear.app/mybike/issue/MYB-20/implement-user-account-dashboard\n</info added on 2025-06-16T20:02:16.088Z>",
         "testStrategy": "Write unit tests for dashboard components. Create integration tests for data fetching and form submissions. Perform e2e tests for user flows within the dashboard. Test authorization to ensure proper access control.",
         "priority": "medium",
-        "dependencies": [
-          3,
-          7
-        ],
+        "dependencies": [3, 7],
         "status": "pending",
         "subtasks": []
       },
@@ -207,9 +175,7 @@
         "details": "Integrate Google Analytics 4 using gtag.js. Implement custom event tracking for key user actions. Use Google Tag Manager for flexible tag management. Set up conversion tracking for checkout process. Implement error tracking using Sentry (v7.54.0).\n<info added on 2025-06-16T20:04:52.176Z>\nLinear Task Reference: MYB-21 (ID: 71b8e03c-fd7f-4bce-a135-246e1535397f)\nLinear URL: https://linear.app/mybike/issue/MYB-21/set-up-analytics-and-tracking\n</info added on 2025-06-16T20:04:52.176Z>",
         "testStrategy": "Verify proper installation of tracking scripts. Test custom event triggers. Ensure data is being correctly sent to Google Analytics. Check error logging in Sentry dashboard.",
         "priority": "low",
-        "dependencies": [
-          2
-        ],
+        "dependencies": [2],
         "status": "pending",
         "subtasks": []
       },
@@ -220,15 +186,7 @@
         "details": "Implement image optimization using next/image. Use dynamic imports for code splitting. Optimize font loading with next/font. Implement proper caching strategies. Use Intersection Observer for lazy loading. Optimize third-party script loading. Implement critical CSS extraction.\n<info added on 2025-06-16T20:07:00.737Z>\nLinear Task: MYB-22 (ID: eb234ae4-ace1-40f2-b26a-8e5ad1dd0ec8)\nLinear URL: https://linear.app/mybike/issue/MYB-22/optimize-performance-and-core-web-vitals\n</info added on 2025-06-16T20:07:00.737Z>",
         "testStrategy": "Run Lighthouse audits in CI/CD pipeline. Use WebPageTest for detailed performance analysis. Monitor Core Web Vitals using Google Search Console. Perform real-user monitoring using tools like SpeedCurve.",
         "priority": "high",
-        "dependencies": [
-          1,
-          2,
-          4,
-          5,
-          6,
-          7,
-          8
-        ],
+        "dependencies": [1, 2, 4, 5, 6, 7, 8],
         "status": "pending",
         "subtasks": []
       },
@@ -239,11 +197,7 @@
         "details": "Use next-seo (v6.0.0) for flexible SEO management. Implement dynamic meta tags for all pages. Create a dynamic sitemap using next-sitemap. Implement structured data for products and articles. Set up canonical URLs. Implement 301 redirects from old URLs to new URLs.\n<info added on 2025-06-16T20:09:51.191Z>\nThis task corresponds to Linear task MYB-23 (ID: 37b4f865-9fa1-4fae-828e-1ffbe945e0e7). URL: https://linear.app/mybike/issue/MYB-23/implement-seo-best-practices\n</info added on 2025-06-16T20:09:51.191Z>",
         "testStrategy": "Use tools like Screaming Frog to crawl the site and check SEO elements. Verify structured data using Google's Rich Results Test. Check sitemap validity. Test redirects from old URLs.",
         "priority": "high",
-        "dependencies": [
-          4,
-          5,
-          9
-        ],
+        "dependencies": [4, 5, 9],
         "status": "pending",
         "subtasks": []
       },
@@ -254,22 +208,7 @@
         "details": "Set up GitHub Actions for CI/CD. Implement automated testing in the pipeline. Use Vercel for deployment with preview deployments for PRs. Set up environment variables for different environments. Implement feature flags using ConfigCat. Set up monitoring and alerting using Datadog.\n<info added on 2025-06-16T20:12:35.244Z>\nLinear Task Reference: MYB-24 (ID: d9766dab-9c0d-41f6-9ee1-49ae0b20e4ab)\nLinear URL: https://linear.app/mybike/issue/MYB-24/set-up-cicd-pipeline-and-deployment\n</info added on 2025-06-16T20:12:35.244Z>",
         "testStrategy": "Test the entire CI/CD pipeline. Verify successful builds and deployments. Test feature flag functionality. Ensure proper environment variable handling. Verify monitoring and alerting setup.",
         "priority": "high",
-        "dependencies": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7,
-          8,
-          9,
-          10,
-          11,
-          12,
-          13,
-          14
-        ],
+        "dependencies": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
         "status": "pending",
         "subtasks": []
       },
@@ -280,17 +219,14 @@
         "details": "1. Perform a comprehensive analysis of the wolfis.ae catalog API:\n   - Document the API endpoints, authentication methods, and rate limits\n   - Map out the complete data schema for products, categories, and variants\n   - Identify any custom fields or metadata that need to be preserved\n\n2. Study the BoostCommerce Filter system:\n   - Document how filters are structured and applied to products\n   - Analyze how filter options are generated from product attributes\n   - Determine how to replicate or improve this functionality in the new system\n\n3. Design the product data structure for the Next.js application:\n   - Create Typescript interfaces for product types\n   - Define database schema if using a database solution\n   - Ensure the structure supports all filtering and sorting requirements\n\n4. Develop migration scripts:\n   - Create Node.js scripts to extract data from wolfis.ae API\n   - Implement data transformation logic to map to the new structure\n   - Add validation to ensure data integrity during migration\n   - Include error handling and logging for troubleshooting\n\n5. Implement incremental migration strategy:\n   - Design the scripts to support both full and delta migrations\n   - Add functionality to track migration progress and resume if interrupted\n   - Create a verification process to compare source and migrated data\n\n6. Document the entire migration process:\n   - Create technical documentation for the migration architecture\n   - Provide a step-by-step guide for executing the migration\n   - Include troubleshooting information for common issues\n<info added on 2025-06-18T08:25:24.954Z>\n7. Task Priority and Dependencies:\n   - This task has HIGH PRIORITY status\n   - Must be completed before detailed work begins on Tasks 4, 5, and 8\n   - Serves as a foundation for understanding the current system architecture\n   - Linear reference: MYB-25 (ID: 8d23bea4-d700-4c09-ae30-d3812594c9d6)\n   - Linear URL: https://linear.app/mybike/issue/MYB-25/analyze-and-migrate-wolfisae-catalog-api-data\n</info added on 2025-06-18T08:25:24.954Z>",
         "testStrategy": "1. Unit Testing:\n   - Write tests for data transformation functions\n   - Create mock API responses for testing extraction logic\n   - Test validation rules for ensuring data integrity\n\n2. Integration Testing:\n   - Test the complete migration pipeline with a subset of real data\n   - Verify that all product relationships (categories, variants, etc.) are preserved\n   - Test incremental migration with modified products\n\n3. Data Verification:\n   - Develop automated comparison tools to verify migrated data against source\n   - Check for data loss or corruption during migration\n   - Verify counts of products, categories, and other entities match\n\n4. Filter System Testing:\n   - Test that all filter options are correctly generated from the migrated data\n   - Verify filter functionality works as expected in the new system\n   - Compare filter performance between old and new systems\n\n5. Performance Testing:\n   - Measure migration script performance with different data volumes\n   - Test API load during migration to ensure it doesn't impact production\n   - Verify query performance on the migrated data structure",
         "status": "pending",
-        "dependencies": [
-          1,
-          4
-        ],
+        "dependencies": [1, 4],
         "priority": "medium",
         "subtasks": []
       }
     ],
     "metadata": {
       "created": "2025-06-16T19:55:14.944Z",
-      "updated": "2025-06-18T08:24:46.005Z",
+      "updated": "2025-06-18T08:39:38.813Z",
       "description": "Tasks for master context"
     }
   }
