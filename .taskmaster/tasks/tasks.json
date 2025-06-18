@@ -9,7 +9,7 @@
         "testStrategy": "Verify project structure, run 'pnpm dev' to ensure the development server starts without errors, and check if Tailwind CSS is working by adding a test component with Tailwind classes.",
         "priority": "high",
         "dependencies": [],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -26,7 +26,7 @@
             "description": "Integrate Husky to enforce code quality checks before commits.",
             "dependencies": [1],
             "details": "Install Husky and configure it to run Prettier and ESLint checks on staged files before each commit. Optionally, add lint-staged for efficient pre-commit processing.",
-            "status": "in-progress",
+            "status": "done",
             "testStrategy": "Attempt a commit with code that violates formatting or linting rules and verify that the commit is blocked until issues are resolved."
           },
           {
@@ -35,7 +35,7 @@
             "description": "Expand the ESLint ruleset to enforce best practices and security for a production-ready e-commerce application.",
             "dependencies": [1],
             "details": "Add or extend ESLint plugins (such as eslint-plugin-react, eslint-plugin-jsx-a11y, eslint-plugin-security, etc.). Configure rules for accessibility, security, and performance. Ensure TypeScript-specific linting is robust.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Run ESLint on the codebase and verify that new rules are enforced. Intentionally introduce violations to confirm detection."
           },
           {
@@ -53,7 +53,7 @@
             "description": "Add any other development tools that improve workflow and code quality for the team.",
             "dependencies": [1, 2, 3, 4],
             "details": "Consider tools such as commitlint for commit message conventions, dotenv for environment variable management, and Storybook for UI component development. Set up initial configuration for each selected tool.",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Verify each tool is operational by running its basic workflow (e.g., commit with a non-conforming message for commitlint, load environment variables with dotenv, start Storybook and view a sample component)."
           }
         ]
@@ -66,8 +66,45 @@
         "testStrategy": "Create unit tests for each component using Vitest. Test responsiveness using different viewport sizes. Ensure accessibility by running axe-core tests.",
         "priority": "high",
         "dependencies": [1],
-        "status": "pending",
-        "subtasks": []
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Header Component",
+            "description": "Design and implement a responsive header component with logo, navigation menu, and user actions (login/cart)",
+            "details": "- Create `components/layout/Header.tsx`\n- Include logo/brand area\n- Main navigation menu (responsive hamburger menu for mobile)\n- User actions: search, account, cart icons\n- Use Tailwind CSS for styling\n- Implement sticky/fixed positioning\n- Ensure accessibility with proper ARIA labels",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 2
+          },
+          {
+            "id": 2,
+            "title": "Create Footer Component",
+            "description": "Implement a comprehensive footer with links, social media, and company information",
+            "details": "- Create `components/layout/Footer.tsx`\n- Include company information and branding\n- Navigation links organized in columns\n- Social media links\n- Newsletter signup area\n- Copyright notice\n- Contact information\n- Use responsive grid layout",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 2
+          },
+          {
+            "id": 3,
+            "title": "Create Layout Component",
+            "description": "Build a main layout wrapper component that combines header, footer, and main content area",
+            "details": "- Create `components/layout/Layout.tsx`\n- Combine Header and Footer components\n- Provide main content area with proper spacing\n- Handle dynamic meta tags and SEO\n- Support different layout variations (full-width, contained, etc.)\n- Update `app/layout.tsx` to use the new Layout component",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 2
+          },
+          {
+            "id": 4,
+            "title": "Set Up Component Directory Structure",
+            "description": "Create the proper directory structure for layout and other components",
+            "details": "- Create `components/` directory in project root\n- Create `components/layout/` subdirectory  \n- Create `components/ui/` subdirectory for reusable UI components\n- Set up proper exports in index files\n- Configure TypeScript paths if needed",
+            "status": "done",
+            "dependencies": [],
+            "parentTaskId": 2
+          }
+        ]
       },
       {
         "id": 3,
@@ -89,7 +126,64 @@
         "priority": "high",
         "dependencies": [2],
         "status": "pending",
-        "subtasks": []
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "API Analysis and Data Structure Mapping",
+            "description": "Analyze the existing Shopify BoostCommerce API and map its data structures to the new Next.js architecture, ensuring compatibility with the new CMS and identifying any required data transformations.",
+            "dependencies": [],
+            "details": "Review current API endpoints, data models, and relationships. Document the mapping to Next.js data requirements and plan for any necessary data normalization or enrichment.",
+            "status": "pending"
+          },
+          {
+            "id": 2,
+            "title": "Dynamic Routing Implementation",
+            "description": "Set up dynamic routing in Next.js to support category pages, product detail pages, and any other dynamic content based on the mapped data structures.",
+            "dependencies": [1],
+            "details": "Utilize Next.js file-based routing and dynamic route segments. Ensure routes are generated based on CMS or API data and support SEO-friendly URLs.",
+            "status": "pending"
+          },
+          {
+            "id": 3,
+            "title": "Category Page Layout Development",
+            "description": "Design and implement the category page layout, integrating product listings, filters, sorting options, and pagination controls.",
+            "dependencies": [2],
+            "details": "Create reusable React components for product grids, filter panels, and sorting dropdowns. Ensure the layout is responsive and accessible.",
+            "status": "pending"
+          },
+          {
+            "id": 4,
+            "title": "Filtering and Sorting Logic Implementation",
+            "description": "Develop advanced filtering and sorting logic for category pages, allowing users to refine product listings by attributes such as price, tags, and custom fields.",
+            "dependencies": [3],
+            "details": "Implement filter state management, query parameter synchronization, and sorting algorithms. Ensure filters and sorts interact smoothly with pagination and state management.",
+            "status": "pending"
+          },
+          {
+            "id": 5,
+            "title": "Server-Side Pagination Integration",
+            "description": "Implement server-side pagination for product listings to optimize performance and scalability, especially for large catalogs.",
+            "dependencies": [4],
+            "details": "Fetch paginated data from the API or CMS on the server, update the UI accordingly, and ensure pagination state is preserved across navigation.",
+            "status": "pending"
+          },
+          {
+            "id": 6,
+            "title": "Zustand State Management Setup",
+            "description": "Integrate Zustand for global state management, handling filter states, sorting preferences, pagination, and any cross-component data sharing.",
+            "dependencies": [5],
+            "details": "Set up Zustand stores, define state slices for filters, sorting, and pagination, and connect them to UI components for reactive updates.",
+            "status": "pending"
+          },
+          {
+            "id": 7,
+            "title": "CMS Integration and Data Fetching",
+            "description": "Integrate the new CMS with the Next.js application, ensuring seamless data fetching for categories, products, and metadata, and supporting dynamic content updates.",
+            "dependencies": [],
+            "details": "Configure API clients or GraphQL queries to fetch data from the CMS, handle authentication if needed, and ensure data consistency across the app.",
+            "status": "pending"
+          }
+        ]
       },
       {
         "id": 5,
@@ -226,7 +320,7 @@
     ],
     "metadata": {
       "created": "2025-06-16T19:55:14.944Z",
-      "updated": "2025-06-18T08:39:38.813Z",
+      "updated": "2025-06-18T08:58:13.076Z",
       "description": "Tasks for master context"
     }
   }
