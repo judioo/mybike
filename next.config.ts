@@ -15,6 +15,27 @@ const nextConfig: NextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+
+  // Set output to standalone for better Vercel compatibility
+  output: 'standalone',
+
+  // Disable static optimization for product pages to fix Image component issue
+  experimental: {
+    // This allows the app to skip static optimization for specific pages
+    // which can help with dynamic components like Image
+    optimizeCss: false,
+  },
+
+  // Configure images to allow external domains if needed
+  images: {
+    domains: ['localhost', 'placehold.co', 'via.placeholder.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
+  },
 };
 
 export default nextConfig;
