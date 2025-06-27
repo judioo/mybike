@@ -23,10 +23,14 @@ const nextConfig: NextConfig = {
   experimental: {
     // Disable static optimization completely
     optimizeCss: false,
+    // Better handling of ESM packages
+    serverActions: {
+      allowedOrigins: ['localhost:3000'],
+    },
   },
 
-  // External packages that need to be transpiled
-  serverExternalPackages: ['react-image-gallery'],
+  // Only use transpilePackages for client-side rendering
+  transpilePackages: ['react-image-gallery'],
 
   // Configure images to allow external domains if needed
   images: {
@@ -37,6 +41,19 @@ const nextConfig: NextConfig = {
         hostname: '**',
       },
     ],
+  },
+
+  // Webpack configuration for handling ESM modules
+  webpack: (config, { isServer }) => {
+    // Handle ESM modules better
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        module: false,
+      };
+    }
+    return config;
   },
 };
 

@@ -5,6 +5,12 @@ import ProductImageOptimizer from './ProductImageOptimizer';
 import ImageGalleryWrapper from './ImageGalleryWrapper';
 import Script from 'next/script';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+
+// Dynamically import Next.js Image component to avoid SSR issues
+const NextImage = dynamic(() => import('next/image'), {
+  ssr: false,
+});
 
 interface ProductImage {
   id?: string;
@@ -74,13 +80,11 @@ export default function ProductImageGallery({
       <div className={`space-y-4 ${className}`}>
         {/* Main Image */}
         <div className='aspect-square bg-gray-100 rounded-lg overflow-hidden relative'>
-          <Image
+          <img
             src={galleryImages[0].original}
-            alt={galleryImages[0].originalAlt}
-            fill
-            className='object-cover'
-            priority
-            sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+            alt={galleryImages[0].originalAlt || ''}
+            className='object-cover w-full h-full'
+            loading="eager"
           />
         </div>
 
@@ -92,12 +96,11 @@ export default function ProductImageGallery({
                 key={index}
                 className='aspect-square bg-gray-100 rounded-md overflow-hidden relative'
               >
-                <Image
+                <img
                   src={image.thumbnail}
-                  alt={image.thumbnailAlt}
-                  fill
-                  className='object-cover'
-                  sizes='(max-width: 768px) 25vw, 10vw'
+                  alt={image.thumbnailAlt || ''}
+                  className='object-cover w-full h-full'
+                  loading="lazy"
                 />
               </div>
             ))}

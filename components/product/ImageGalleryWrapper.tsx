@@ -1,90 +1,90 @@
 'use client';
 
 // This is a wrapper component for react-image-gallery to handle ESM import issues
-import React from 'react';
-// We'll import the CSS directly here
-import 'react-image-gallery/styles/css/image-gallery.css';
+import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 
-// Define the props interface based on what we need from react-image-gallery
-interface ImageGalleryProps {
+// Define a fallback loading component
+const GalleryLoading = () => (
+  <div className="w-full aspect-square bg-gray-100 animate-pulse rounded-lg flex items-center justify-center">
+    <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
+
+// Use dynamic import with noSSR to avoid ESM issues
+const DynamicReactImageGallery = dynamic(
+  () => import('react-image-gallery').then((mod) => {
+    // Return the default export
+    return mod.default;
+  }),
+  { ssr: false, loading: () => <GalleryLoading /> }
+);
+
+// Use a simple type for the gallery props to avoid TypeScript errors
+type ImageGalleryProps = {
   items: Array<{
     original: string;
     thumbnail?: string;
     originalAlt?: string;
     thumbnailAlt?: string;
-    originalTitle?: string;
-    thumbnailTitle?: string;
-    originalClass?: string;
-    thumbnailClass?: string;
+    description?: string;
+    [key: string]: any;
   }>;
-  showThumbnails?: boolean;
-  showFullscreenButton?: boolean;
-  showPlayButton?: boolean;
-  showNav?: boolean;
-  thumbnailPosition?: 'top' | 'bottom' | 'left' | 'right';
-  useBrowserFullscreen?: boolean;
-  lazyLoad?: boolean;
-  onClick?: (event: React.MouseEvent) => void;
-  onImageLoad?: (event: React.SyntheticEvent) => void;
-  onSlide?: (currentIndex: number) => void;
-  onPause?: (currentIndex: number) => void;
-  onPlay?: (currentIndex: number) => void;
-  onThumbnailClick?: (event: React.MouseEvent, index: number) => void;
-  onThumbnailError?: (event: React.SyntheticEvent) => void;
-  onImageError?: (event: React.SyntheticEvent) => void;
-  onTouchMove?: (event: React.TouchEvent) => void;
-  onTouchEnd?: (event: React.TouchEvent) => void;
-  onTouchStart?: (event: React.TouchEvent) => void;
-  onMouseOver?: (event: React.MouseEvent) => void;
-  onMouseLeave?: (event: React.MouseEvent) => void;
-  additionalClass?: string;
-  slideInterval?: number;
-  slideOnThumbnailOver?: boolean;
-  startIndex?: number;
-  swipeThreshold?: number;
-  swipingTransitionDuration?: number;
-  infinite?: boolean;
-  disableThumbnailScroll?: boolean;
-  disableKeyDown?: boolean;
-  disableSwipe?: boolean;
-  disableThumbnailSwipe?: boolean;
-  renderCustomControls?: () => React.ReactNode;
-  renderLeftNav?: (onClick: () => void, disabled: boolean) => React.ReactNode;
-  renderRightNav?: (onClick: () => void, disabled: boolean) => React.ReactNode;
-  renderPlayPauseButton?: (onClick: () => void, isPlaying: boolean) => React.ReactNode;
-  renderFullscreenButton?: (onClick: () => void, isFullscreen: boolean) => React.ReactNode;
-  renderItem?: (item: any) => React.ReactNode;
-  renderThumbInner?: (item: any) => React.ReactNode;
-  stopPropagation?: boolean;
-  indexSeparator?: string;
-  slideDuration?: number;
-  swipingThumbnailTransitionDuration?: number;
-  useTranslate3D?: boolean;
-  isRTL?: boolean;
-}
+  [key: string]: any;
+};
 
-// Create a wrapper component that dynamically imports react-image-gallery
-const ImageGalleryWrapper: React.FC<ImageGalleryProps> = (props) => {
-  const [ImageGalleryComponent, setImageGalleryComponent] = React.useState<any>(null);
+// Create a wrapper component that uses the dynamically imported react-image-gallery
+const ImageGalleryWrapper = (props: ImageGalleryProps) => {
+  // Memoize props to prevent unnecessary re-renders
+  const memoizedProps = React.useMemo(() => props, [JSON.stringify(props)]);
+  
+  // Add custom gallery styles on client side
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const style = document.createElement('style');
+      style.textContent = `
+        .image-gallery-thumbnail {
+          border-radius: 0.375rem;
+          border: 2px solid transparent;
+          transition: all 0.2s ease;
+        }
+        .image-gallery-thumbnail.active {
+          border-color: #2563eb;
+        }
+        .image-gallery-thumbnail:hover {
+          border-color: #60a5fa;
+        }
+        .image-gallery-icon {
+          color: white;
+          filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+        }
+        .image-gallery-icon:hover {
+          color: #3b82f6;
+        }
+        .image-gallery-index {
+          background: rgba(0, 0, 0, 0.6);
+          color: white;
+          padding: 0.25rem 0.5rem;
+          border-radius: 0.25rem;
+          font-size: 0.875rem;
+        }
+      `;
+      document.head.appendChild(style);
 
-  React.useEffect(() => {
-    // Import the library dynamically on the client side
-    import('react-image-gallery').then((module) => {
-      setImageGalleryComponent(() => module.default || module);
-    });
+      // Also try to load the original CSS as a fallback
+      try {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdnjs.cloudflare.com/ajax/libs/react-image-gallery/1.3.0/image-gallery.min.css';
+        document.head.appendChild(link);
+      } catch (error) {
+        console.error('Failed to load image gallery styles from CDN:', error);
+      }
+    }
   }, []);
 
-  // Show a loading spinner while the component is loading
-  if (!ImageGalleryComponent) {
-    return (
-      <div className='aspect-square bg-gray-100 rounded-lg flex items-center justify-center'>
-        <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600'></div>
-      </div>
-    );
-  }
-
-  // Render the actual gallery once loaded
-  return <ImageGalleryComponent {...props} />;
+  // Return the dynamic component with props
+  return <DynamicReactImageGallery {...memoizedProps} />;
 };
 
 export default ImageGalleryWrapper;
