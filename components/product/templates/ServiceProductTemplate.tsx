@@ -198,7 +198,8 @@ export default function ServiceProductTemplate({ product, relatedProducts }: Ser
               {product.reviews && product.reviews.length > 0 && (
                 <ReviewSection 
                   reviews={product.reviews} 
-                  productId={product.id.toString()} 
+                  productId={product.id.toString()}
+                  productTitle={product.title}
                   initialLimit={5} 
                 />
               )}

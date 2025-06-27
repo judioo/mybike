@@ -2,21 +2,33 @@ import React, { useState } from 'react';
 import { Review } from '@/types/product';
 import ReviewSummary from './ReviewSummary';
 import ReviewList from './ReviewList';
+import dynamic from 'next/dynamic';
+
+// Import the skeleton directly to avoid circular reference
+import { Skeleton as ReviewFormSkeleton } from './ReviewForm';
+
+const ReviewForm = dynamic(() => import('./ReviewForm'), {
+  ssr: false,
+  loading: () => <ReviewFormSkeleton />
+});
 
 interface ReviewSectionProps {
   reviews: Review[];
   productId: string;
+  productTitle: string;
   initialLimit?: number;
 }
 
 export default function ReviewSection({ 
   reviews, 
-  productId, 
+  productId,
+  productTitle,
   initialLimit = 5 
 }: ReviewSectionProps) {
   const [displayLimit, setDisplayLimit] = useState(initialLimit);
   const [sortOption, setSortOption] = useState<'newest' | 'highest' | 'lowest'>('newest');
   const [filterRating, setFilterRating] = useState<number | null>(null);
+  const [showReviewForm, setShowReviewForm] = useState<boolean>(false);
   
   // Sort and filter reviews
   const sortedAndFilteredReviews = [...reviews]
@@ -46,6 +58,11 @@ export default function ReviewSection({
   const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOption(e.target.value as 'newest' | 'highest' | 'lowest');
     setDisplayLimit(initialLimit); // Reset display limit when sort changes
+  };
+  
+  const handleReviewSubmitted = () => {
+    // In a real app, we would refetch reviews here
+    setShowReviewForm(false);
   };
 
   return (
@@ -103,6 +120,12 @@ export default function ReviewSection({
                 <option value="lowest">Lowest Rated</option>
               </select>
             </div>
+            <button
+              onClick={() => setShowReviewForm(!showReviewForm)}
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              {showReviewForm ? 'Cancel Review' : 'Write a Review'}
+            </button>
           </div>
           
           {/* Reviews count */}
@@ -110,6 +133,15 @@ export default function ReviewSection({
             Showing {displayedReviews.length} of {sortedAndFilteredReviews.length} reviews
             {filterRating !== null && ` with ${filterRating} stars`}
           </div>
+          
+          {/* Review Form */}
+          {showReviewForm && (
+            <ReviewForm 
+              productId={productId} 
+              productTitle={productTitle} 
+              onReviewSubmitted={handleReviewSubmitted} 
+            />
+          )}
           
           {/* Reviews list */}
           <ReviewList reviews={displayedReviews} productId={productId} />
