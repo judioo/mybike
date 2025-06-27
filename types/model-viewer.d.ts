@@ -21,6 +21,9 @@ interface ModelViewerAttributes extends React.HTMLAttributes<HTMLElement> {
   'auto-rotate'?: boolean;
   'ar'?: boolean;
   'ar-modes'?: string;
+  'ar-scale'?: 'auto' | 'fixed';
+  'ar-placement'?: 'floor' | 'wall';
+  'ios-src'?: string;
   'shadow-intensity'?: string | number;
   'environment-image'?: string;
   exposure?: string | number;
@@ -46,8 +49,6 @@ interface ModelViewerAttributes extends React.HTMLAttributes<HTMLElement> {
   'interpolation-decay'?: string | number;
   'ar-status'?: string;
   'ar-tracking'?: string;
-  'ar-scale'?: 'auto' | 'fixed';
-  'ar-placement'?: 'floor' | 'wall';
   'ios-src'?: string;
   'quick-look-browsers'?: string;
   'min-height'?: string;

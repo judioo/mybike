@@ -20,13 +20,14 @@ const FallbackImage = ({ src, alt, className, width, height, ...props }: any) =>
 );
 
 interface ProductImageOptimizerProps {
-  image: ProductImage;
+  image?: ProductImage;
+  src?: string;
+  alt?: string;
   sizes?: string;
   priority?: boolean;
   className?: string;
   fill?: boolean;
   quality?: number;
-  alt?: string;
   width?: number;
   height?: number;
 }

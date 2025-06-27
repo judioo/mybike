@@ -21,21 +21,39 @@ type ModelViewerProps = {
   poster?: string;
   autoRotate?: boolean;
   cameraControls?: boolean;
+  environmentImage?: string;
+  exposure?: number;
+  arEnabled?: boolean;
 };
 
 type YoutubeEmbedProps = {
   videoId: string;
   className?: string;
+  startAt?: number;
+  autoplay?: boolean;
 };
 
 type VimeoEmbedProps = {
   videoId: string;
   className?: string;
+  autoplay?: boolean;
+};
+
+type SketchfabEmbedProps = {
+  modelId: string;
+  className?: string;
+  autoRotate?: boolean;
+};
+
+type PanoramaViewerProps = {
+  src: string;
+  className?: string;
+  alt?: string;
 };
 
 interface RichMediaProps {
   media: {
-    type: 'image' | 'video' | '3d' | 'youtube' | 'vimeo';
+    type: 'image' | 'video' | '3d' | 'youtube' | 'vimeo' | 'sketchfab' | 'panorama' | 'gltf';
     src: string;
     alt?: string;
     width?: number;
@@ -46,8 +64,15 @@ interface RichMediaProps {
     muted?: boolean;
     controls?: boolean;
     id?: string;
+    startAt?: number;
+    environmentImage?: string;
+    exposure?: number;
+    autoRotate?: boolean;
+    cameraControls?: boolean;
+    arEnabled?: boolean;
   };
   className?: string;
+  templateSuffix?: string;
 }
 
 // Dynamically import media components with Next.js dynamic imports
@@ -71,7 +96,24 @@ const VimeoEmbed = dynamic<VimeoEmbedProps>(() => import('./media/VimeoEmbed').t
   ssr: false
 });
 
-export default function RichMediaRenderer({ media, className = '' }: RichMediaProps) {
+// New media component imports
+const SketchfabEmbed = dynamic<SketchfabEmbedProps>(
+  () => import('./media/SketchfabEmbed').then(mod => mod.default),
+  {
+    loading: () => <div className="animate-pulse bg-gray-200 rounded-lg h-64"></div>,
+    ssr: false
+  }
+);
+
+const PanoramaViewer = dynamic<PanoramaViewerProps>(
+  () => import('./media/PanoramaViewer').then(mod => mod.default),
+  {
+    loading: () => <div className="animate-pulse bg-gray-200 rounded-lg h-64"></div>,
+    ssr: false
+  }
+);
+
+export default function RichMediaRenderer({ media, className = '', templateSuffix = '' }: RichMediaProps) {
   // Fallback component for Suspense
   const fallback = (
     <div className={`bg-gray-100 animate-pulse ${className}`} style={{ aspectRatio: '16/9' }}>
@@ -83,11 +125,31 @@ export default function RichMediaRenderer({ media, className = '' }: RichMediaPr
     </div>
   );
 
+  // Apply template-specific styling
+  const getTemplateSpecificClass = () => {
+    switch (templateSuffix) {
+      case 'bike':
+      case 'bicycle':
+        return 'bike-media-container';
+      case 'accessory':
+        return 'accessory-media-container';
+      case 'preloved':
+      case 'used':
+        return 'preloved-media-container';
+      case 'service':
+        return 'service-media-container';
+      default:
+        return '';
+    }
+  };
+
+  const combinedClassName = `${className} ${getTemplateSpecificClass()}`;
+
   // Render the appropriate media type
   switch (media.type) {
     case 'image':
       return (
-        <div className={`relative overflow-hidden ${className}`}>
+        <div className={`relative overflow-hidden ${combinedClassName}`}>
           <Image
             src={media.src}
             alt={media.alt || 'Product media'}
@@ -109,7 +171,7 @@ export default function RichMediaRenderer({ media, className = '' }: RichMediaPr
             loop={media.loop}
             muted={media.muted}
             controls={media.controls !== false}
-            className={className}
+            className={combinedClassName}
           />
         </Suspense>
       );
@@ -120,7 +182,53 @@ export default function RichMediaRenderer({ media, className = '' }: RichMediaPr
           <ModelViewer
             src={media.src}
             alt={media.alt || 'Product 3D model'}
-            className={className}
+            poster={media.poster}
+            autoRotate={media.autoRotate !== false}
+            cameraControls={media.cameraControls !== false}
+            environmentImage={media.environmentImage}
+            exposure={media.exposure}
+            arEnabled={media.arEnabled}
+            className={combinedClassName}
+          />
+        </Suspense>
+      );
+
+    case 'gltf':
+      // GLTF is handled by ModelViewer as well
+      return (
+        <Suspense fallback={fallback}>
+          <ModelViewer
+            src={media.src}
+            alt={media.alt || 'Product 3D model'}
+            poster={media.poster}
+            autoRotate={media.autoRotate !== false}
+            cameraControls={media.cameraControls !== false}
+            environmentImage={media.environmentImage}
+            exposure={media.exposure}
+            arEnabled={media.arEnabled}
+            className={combinedClassName}
+          />
+        </Suspense>
+      );
+
+    case 'sketchfab':
+      return (
+        <Suspense fallback={fallback}>
+          <SketchfabEmbed
+            modelId={media.id || ''}
+            autoRotate={media.autoRotate}
+            className={combinedClassName}
+          />
+        </Suspense>
+      );
+
+    case 'panorama':
+      return (
+        <Suspense fallback={fallback}>
+          <PanoramaViewer
+            src={media.src}
+            alt={media.alt || 'Product panorama view'}
+            className={combinedClassName}
           />
         </Suspense>
       );
@@ -130,7 +238,9 @@ export default function RichMediaRenderer({ media, className = '' }: RichMediaPr
         <Suspense fallback={fallback}>
           <YoutubeEmbed
             videoId={media.id || ''}
-            className={className}
+            startAt={media.startAt}
+            autoplay={media.autoplay}
+            className={combinedClassName}
           />
         </Suspense>
       );
@@ -140,15 +250,16 @@ export default function RichMediaRenderer({ media, className = '' }: RichMediaPr
         <Suspense fallback={fallback}>
           <VimeoEmbed
             videoId={media.id || ''}
-            className={className}
+            autoplay={media.autoplay}
+            className={combinedClassName}
           />
         </Suspense>
       );
 
     default:
       return (
-        <div className={`bg-gray-100 flex items-center justify-center ${className}`}>
-          <p className="text-gray-500">Unsupported media type</p>
+        <div className={`bg-gray-100 flex items-center justify-center ${combinedClassName}`}>
+          <p className="text-gray-500">Unsupported media type: {media.type}</p>
         </div>
       );
   }

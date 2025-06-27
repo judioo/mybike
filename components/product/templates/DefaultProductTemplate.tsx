@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { Product } from '@/types/product';
 import ProductImageGallery from '@/components/product/ProductImageGallery';
 import VariantSelector from '@/components/product/VariantSelector';
@@ -9,6 +9,8 @@ import RelatedProducts from '@/components/product/RelatedProducts';
 import RichMediaRenderer from '@/components/product/RichMediaRenderer';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { detectRichMedia } from '@/components/product/ProductTemplateManager';
+import { MediaItem } from '@/types/media';
 
 // Lazy load review components to reduce initial bundle size
 const ReviewSection = dynamic(
@@ -22,15 +24,20 @@ const ReviewSection = dynamic(
 interface DefaultProductTemplateProps {
   product: Product;
   relatedProducts: Product[];
+  richMedia?: any[];
+  templateSuffix?: string;
 }
 
-export default function DefaultProductTemplate({ product, relatedProducts }: DefaultProductTemplateProps) {
-  // Detect if product has rich media (videos, 3D models)
-  const hasRichMedia = product.metafields?.richMedia || 
-    (product.metafields?.mediaType && product.metafields.mediaType !== 'image');
-  
-  // Process rich media if available
-  const richMedia = hasRichMedia ? processRichMedia(product) : null;
+export default function DefaultProductTemplate({ 
+  product, 
+  relatedProducts, 
+  richMedia: propRichMedia, 
+  templateSuffix = ''
+}: DefaultProductTemplateProps) {
+  // Use provided rich media or detect it if not provided
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
+  const richMedia = propRichMedia || detectRichMedia(product);
+  const hasRichMedia = richMedia && richMedia.length > 0;
 
   return (
     <div className="min-h-screen py-8">
@@ -49,14 +56,29 @@ export default function DefaultProductTemplate({ product, relatedProducts }: Def
                   className="flex-shrink-0 h-5 w-5 text-gray-300"
                   fill="currentColor"
                   viewBox="0 0 20 20"
+                  aria-hidden="true"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  />
+                  <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
                 </svg>
-                <span className="ml-4 text-gray-500 font-medium">
+                <Link 
+                  href={`/collections/${product.collections?.[0]?.handle || 'all'}`}
+                  className="ml-4 text-gray-400 hover:text-gray-500"
+                >
+                  {product.collections?.[0]?.title || 'Products'}
+                </Link>
+              </div>
+            </li>
+            <li>
+              <div className="flex items-center">
+                <svg
+                  className="flex-shrink-0 h-5 w-5 text-gray-300"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  aria-hidden="true"
+                >
+                  <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
+                </svg>
+                <span className="ml-4 text-gray-500 font-medium" aria-current="page">
                   {product.title}
                 </span>
               </div>
@@ -64,83 +86,22 @@ export default function DefaultProductTemplate({ product, relatedProducts }: Def
           </ol>
         </nav>
 
-        {/* Product Details */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          {/* Product Images */}
-          <div>
-            {richMedia ? (
-              <div className="mb-4">
-                <RichMediaRenderer media={richMedia} className="w-full aspect-video" />
-              </div>
-            ) : null}
-            <ProductImageGallery
-              images={product.images}
-              productTitle={product.title}
-            />
-          </div>
-
-          {/* Product Info */}
-          <div className="space-y-6">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-                {product.title}
-              </h1>
-
-              {/* Price and Availability */}
-              <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-baseline">
-                  <p className="text-3xl tracking-tight text-gray-900">
-                    ${product.price}
-                  </p>
-                  {product.compareAtPrice &&
-                    product.compareAtPrice > product.price && (
-                      <span className="ml-3 text-lg text-gray-500 line-through">
-                        ${product.compareAtPrice}
-                      </span>
-                    )}
-                  {product.compareAtPrice &&
-                    product.compareAtPrice > product.price && (
-                      <span className="ml-3 text-sm font-medium text-green-600">
-                        Save $
-                        {(product.compareAtPrice - product.price).toFixed(
-                          2
-                        )}
-                      </span>
-                    )}
-                </div>
-
-                {/* Inventory Status */}
-                <div className="flex items-center">
-                  {product.available !== false ? (
-                    <span className="flex items-center text-sm font-medium text-green-600">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      In Stock
-                    </span>
-                  ) : (
-                    <span className="flex items-center text-sm font-medium text-red-600">
-                      <svg
-                        className="w-4 h-4 mr-1"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Out of Stock
-                    </span>
+        {/* Product section */}
+        <div className="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
+          {/* Image gallery */}
+          <div className="flex flex-col">
+            <ProductImageGallery product={product} />
+            
+            {/* Rich media (if available) */}
+            {hasRichMedia && (
+              <div className={`mt-6 w-full bg-gray-50 rounded-lg p-4 ${templateSuffix ? `media-${templateSuffix}` : ''}`}>
+                <h3 className="text-lg font-medium text-gray-900 mb-3">Product Media</h3>
+                <div className="aspect-w-16 aspect-h-9">
+                  {richMedia.length > 0 && (
+                    <RichMediaRenderer 
+                      media={richMedia[activeMediaIndex]} 
+                      templateSuffix={templateSuffix}
+                    />
                   )}
                 </div>
               </div>
