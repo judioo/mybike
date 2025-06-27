@@ -1,14 +1,14 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
+import { useCartStore, useUIStore } from '@/lib/stores';
 
 const Header = () => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+  const cartItemCount = useCartStore((state) => state.getTotalItems());
+  const isMobileMenuOpen = useUIStore((state) => state.isMobileMenuOpen);
+  const toggleMobileMenu = useUIStore((state) => state.toggleMobileMenu);
+  const closeMobileMenu = useUIStore((state) => state.closeMobileMenu);
+  const openCart = useCartStore((state) => state.openCart);
 
   const navigationLinks = [
     { href: '/bikes', label: 'Bikes' },
@@ -94,10 +94,10 @@ const Header = () => {
             </Link>
 
             {/* Cart Icon with Badge */}
-            <Link
-              href='/cart'
+            <button
+              onClick={openCart}
               className='relative p-2 text-gray-500 hover:text-blue-600 transition-colors'
-              aria-label='Shopping cart'
+              aria-label={`Shopping cart (${cartItemCount} items)`}
             >
               <svg
                 className='w-5 h-5'
@@ -113,10 +113,12 @@ const Header = () => {
                 />
               </svg>
               {/* Cart item count badge */}
-              <span className='absolute -top-1 -right-1 bg-blue-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center'>
-                0
-              </span>
-            </Link>
+              {cartItemCount > 0 && (
+                <span className='absolute -top-1 -right-1 bg-blue-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center'>
+                  {cartItemCount > 99 ? '99+' : cartItemCount}
+                </span>
+              )}
+            </button>
 
             {/* Mobile Menu Toggle */}
             <button
@@ -170,7 +172,7 @@ const Header = () => {
                   key={link.href}
                   href={link.href}
                   className='px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors'
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={closeMobileMenu}
                 >
                   {link.label}
                 </Link>
