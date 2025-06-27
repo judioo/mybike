@@ -19,13 +19,17 @@ interface ProductPageProps {
   params: Promise<{ handle: string }>;
 }
 
-// Generate static params for all products
-export async function generateStaticParams() {
-  const { products } = await DataService.getProducts();
-  return products.map((product) => ({
-    handle: product.handle,
-  }));
-}
+// Force dynamic rendering for this page
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
+
+// Comment out static params generation to force dynamic rendering
+// export async function generateStaticParams() {
+//   const { products } = await DataService.getProducts();
+//   return products.map((product) => ({
+//     handle: product.handle,
+//   }));
+// }
 
 // Generate metadata
 export async function generateMetadata({

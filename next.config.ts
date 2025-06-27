@@ -19,12 +19,14 @@ const nextConfig: NextConfig = {
   // Set output to standalone for better Vercel compatibility
   output: 'standalone',
 
-  // Disable static optimization for product pages to fix Image component issue
+  // Disable static optimization and force dynamic rendering
   experimental: {
-    // This allows the app to skip static optimization for specific pages
-    // which can help with dynamic components like Image
+    // Disable static optimization completely
     optimizeCss: false,
   },
+
+  // External packages that need to be transpiled
+  serverExternalPackages: ['react-image-gallery'],
 
   // Configure images to allow external domains if needed
   images: {

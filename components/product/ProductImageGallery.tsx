@@ -1,21 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 import ProductImageOptimizer from './ProductImageOptimizer';
-
-// Dynamically import ImageGallery to avoid SSR issues
-const ImageGallery = dynamic(() => import('react-image-gallery'), {
-  ssr: false,
-  loading: () => (
-    <div className='aspect-square bg-gray-100 rounded-lg flex items-center justify-center'>
-      <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600'></div>
-    </div>
-  ),
-});
-
-// Import CSS for react-image-gallery
-import 'react-image-gallery/styles/css/image-gallery.css';
+import ImageGalleryWrapper from './ImageGalleryWrapper';
+import Script from 'next/script';
+import { useRouter } from 'next/navigation';
 
 interface ProductImage {
   id?: string;
@@ -39,8 +28,8 @@ export default function ProductImageGallery({
   productTitle = 'Product',
   className = '',
 }: ProductImageGalleryProps) {
-  const [isClient, setIsClient] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -120,98 +109,101 @@ export default function ProductImageGallery({
 
   return (
     <div className={`product-image-gallery ${className}`}>
-      <ImageGallery
-        items={galleryImages}
-        startIndex={currentIndex}
-        onSlide={setCurrentIndex}
-        showPlayButton={galleryImages.length > 1}
-        showFullscreenButton={true}
-        showNav={galleryImages.length > 1}
-        showThumbnails={galleryImages.length > 1}
-        thumbnailPosition='bottom'
-        slideDuration={450}
-        slideInterval={4000}
-        infinite={galleryImages.length > 2}
-        lazyLoad={true}
-        showBullets={false}
-        showIndex={galleryImages.length > 1}
-        indexSeparator=' / '
-        useBrowserFullscreen={true}
-        renderItem={(item) => (
-          <div className='image-gallery-image-wrapper'>
-            <ProductImageOptimizer
-              image={{ src: item.original, alt: item.originalAlt }}
-              width={600}
-              height={600}
-              priority={currentIndex === 0}
-              className='image-gallery-image object-cover'
-              sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px'
+      {/* Add gallery styles via Script component to avoid TypeScript errors */}
+      <Script id="gallery-styles" strategy="afterInteractive">
+        {`
+          (function() {
+            const style = document.createElement('style');
+            style.textContent = \`
+              .product-image-gallery .image-gallery-thumbnail {
+                border-radius: 0.375rem;
+                border: 2px solid transparent;
+                transition: all 0.2s ease;
+              }
+              .product-image-gallery .image-gallery-thumbnail.active {
+                border-color: #2563eb;
+              }
+              .product-image-gallery .image-gallery-thumbnail:hover {
+                border-color: #60a5fa;
+              }
+              .product-image-gallery .image-gallery-icon {
+                color: white;
+                filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+              }
+              .product-image-gallery .image-gallery-icon:hover {
+                color: #3b82f6;
+              }
+              .product-image-gallery .image-gallery-index {
+                background: rgba(0, 0, 0, 0.6);
+                color: white;
+                padding: 0.25rem 0.5rem;
+                border-radius: 0.25rem;
+                font-size: 0.875rem;
+              }
+            \`;
+            document.head.appendChild(style);
+          })();
+        `}
+      </Script>
+
+      {isClient ? (
+        <ImageGalleryWrapper
+          items={galleryImages}
+          startIndex={currentIndex}
+          onSlide={setCurrentIndex}
+          showPlayButton={galleryImages.length > 1}
+          showFullscreenButton={true}
+          showNav={galleryImages.length > 1}
+          showThumbnails={galleryImages.length > 1}
+          thumbnailPosition='bottom'
+          useBrowserFullscreen={true}
+          lazyLoad={true}
+          renderItem={(item: any) => (
+            <div className='image-gallery-image-wrapper'>
+              <ProductImageOptimizer
+                image={{
+                  src: item.original,
+                  alt: item.originalAlt || '',
+                }}
+                width={600}
+                height={600}
+                priority={currentIndex === 0}
+                className='image-gallery-image object-cover'
+                sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px'
+              />
+            </div>
+          )}
+          renderThumbInner={(item: any) => (
+            <div className='image-gallery-thumbnail-wrapper'>
+              <ProductImageOptimizer
+                image={{
+                  src: item.thumbnail || item.original,
+                  alt: item.thumbnailAlt || item.originalAlt || '',
+                }}
+                width={100}
+                height={100}
+                className='image-gallery-thumbnail-image object-cover'
+                sizes='100px'
+              />
+            </div>
+          )}
+        />
+      ) : (
+        // Fallback for server-side rendering
+        <div className="aspect-square bg-gray-100 rounded-lg">
+          {images.length > 0 && images[0].src && (
+            <img
+              src={images[0].src}
+              alt={images[0].alt || 'Product image'}
+              width={800}
+              height={800}
+              className="object-contain w-full h-full"
             />
-          </div>
-        )}
-        renderThumbInner={(item) => (
-          <div className='image-gallery-thumbnail-wrapper'>
-            <ProductImageOptimizer
-              image={{ src: item.thumbnail, alt: item.thumbnailAlt }}
-              width={100}
-              height={100}
-              className='image-gallery-thumbnail-image object-cover'
-              sizes='100px'
-            />
-          </div>
-        )}
-      />
-
-      {/* Custom CSS Styles */}
-      <style jsx global>{`
-        .product-image-gallery .image-gallery {
-          border-radius: 0.5rem;
-          overflow: hidden;
-        }
-
-        .product-image-gallery
-          .image-gallery-content
-          .image-gallery-slide
-          .image-gallery-image {
-          max-height: 600px;
-          border-radius: 0.5rem;
-        }
-
-        .product-image-gallery .image-gallery-thumbnails-wrapper {
-          margin-top: 1rem;
-        }
-
-        .product-image-gallery .image-gallery-thumbnail {
-          border-radius: 0.375rem;
-          border: 2px solid transparent;
-          transition: all 0.2s ease;
-        }
-
-        .product-image-gallery .image-gallery-thumbnail.active {
-          border-color: #2563eb;
-        }
-
-        .product-image-gallery .image-gallery-thumbnail:hover {
-          border-color: #60a5fa;
-        }
-
-        .product-image-gallery .image-gallery-icon {
-          color: white;
-          filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
-        }
-
-        .product-image-gallery .image-gallery-icon:hover {
-          color: #3b82f6;
-        }
-
-        .product-image-gallery .image-gallery-index {
-          background: rgba(0, 0, 0, 0.6);
-          color: white;
-          padding: 0.25rem 0.5rem;
-          border-radius: 0.25rem;
-          font-size: 0.875rem;
-        }
-      `}</style>
+          )}
+        </div>
+      )}
     </div>
   );
 }
+
+
