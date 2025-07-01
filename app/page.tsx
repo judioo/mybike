@@ -9,7 +9,7 @@ export default function Home() {
         <div className='absolute inset-0 z-0'>
           <Image 
             src="/images/Bike Racer Banner Image.png" 
-            alt="Cervelo Aspero-5" 
+            alt="Cervelo Aspero-5 gravel bike being raced on a challenging terrain" 
             fill 
             className="object-cover" 
             priority
@@ -59,7 +59,7 @@ export default function Home() {
             <div className='category-card group h-[400px] lg:h-[450px]'>
               <Image 
                 src="https://images.pexels.com/photos/5465164/pexels-photo-5465164.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1" 
-                alt="Road Bikes" 
+                alt="Premium carbon road bike with aerodynamic design" 
                 fill 
                 className="object-cover transition-transform duration-700 group-hover:scale-105" 
                 priority
@@ -76,7 +76,7 @@ export default function Home() {
             <div className='category-card group h-[400px] lg:h-[450px]'>
               <Image 
                 src="https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1" 
-                alt="Mountain Bikes" 
+                alt="High-performance mountain bike on rugged trail terrain" 
                 fill 
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
@@ -91,8 +91,8 @@ export default function Home() {
             {/* Category 3 */}
             <div className='category-card group h-[400px] lg:h-[450px]'>
               <Image 
-                src="https://images.pexels.com/photos/5067778/pexels-photo-5067778.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1" 
-                alt="Cycling Clothing" 
+                src="https://images.pexels.com/photos/5807541/pexels-photo-5807541.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1" 
+                alt="Professional cycling jerseys and apparel for performance riding" 
                 fill 
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
@@ -108,7 +108,7 @@ export default function Home() {
             <div className='category-card group h-[400px] lg:h-[450px]'>
               <Image 
                 src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop&crop=center" 
-                alt="Cycling Accessories" 
+                alt="Essential cycling accessories including helmets, lights, and tools" 
                 fill 
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
@@ -134,7 +134,7 @@ export default function Home() {
             <div className='relative h-[550px] lg:h-[650px] overflow-hidden group'>
               <Image 
                 src="https://images.pexels.com/photos/2539400/pexels-photo-2539400.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&dpr=1" 
-                alt="Preloved Bikes" 
+                alt="Premium pre-owned road bike in excellent condition" 
                 fill 
                 className="object-cover transition-transform duration-700 group-hover:scale-105" 
               />
@@ -152,7 +152,7 @@ export default function Home() {
             <div className='relative h-[550px] lg:h-[650px] overflow-hidden group'>
               <Image 
                 src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=800&fit=crop&crop=center" 
-                alt="Indoor Trainers" 
+                alt="High-tech indoor cycling trainer with smart connectivity features" 
                 fill 
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
@@ -188,7 +188,7 @@ export default function Home() {
               <div className='aspect-w-16 aspect-h-10 bg-gray-100 mb-6 relative overflow-hidden'>
                 <Image 
                   src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&h=400&fit=crop&crop=center" 
-                  alt="Blog post" 
+                  alt="Cyclist riding a road bike on a scenic mountain route" 
                   fill 
                   className="object-cover transition-transform duration-700 group-hover:scale-105" 
                 />
@@ -213,7 +213,7 @@ export default function Home() {
               <div className='aspect-w-16 aspect-h-10 bg-gray-100 mb-6 relative overflow-hidden'>
                 <Image 
                   src="https://images.unsplash.com/photo-1544191696-15693072b5a3?w=600&h=400&fit=crop&crop=center" 
-                  alt="Blog post" 
+                  alt="Mountain bike maintenance and repair tools laid out on workbench" 
                   fill 
                   className="object-cover transition-transform duration-700 group-hover:scale-105" 
                 />
@@ -238,7 +238,7 @@ export default function Home() {
               <div className='aspect-w-16 aspect-h-10 bg-gray-100 mb-6 relative overflow-hidden'>
                 <Image 
                   src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=600&h=400&fit=crop&crop=center" 
-                  alt="Blog post" 
+                  alt="Scenic cycling route through UAE desert landscape at sunset" 
                   fill 
                   className="object-cover transition-transform duration-700 group-hover:scale-105" 
                 />
@@ -284,7 +284,7 @@ export default function Home() {
             <div className='relative h-[400px]'>
               <Image 
                 src="/images/store-interior.jpg" 
-                alt="MyBike Store" 
+                alt="MyBike premium retail store interior showcasing high-end bicycles" 
                 fill 
                 style={{objectFit: 'cover'}} 
               />

@@ -85,9 +85,9 @@ const Header = () => {
             <div className='h-12'>
               <Image 
                 src="/images/logo-black-new.svg" 
-                alt="MyBike Logo" 
-                width={140} 
-                height={48} 
+                alt="MyBike Logo - Premium cycling brand" 
+                width={130} 
+                height={44} 
                 className="object-contain"
               />
             </div>
@@ -95,7 +95,7 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav
-            className='hidden lg:flex items-center space-x-6 xl:space-x-8'
+            className='hidden lg:flex items-center space-x-3 xl:space-x-5 2xl:space-x-8'
             aria-label='Main navigation'
           >
             {navigationLinks.map((link) => (
@@ -107,7 +107,7 @@ const Header = () => {
               >
                 <Link
                   href={link.href}
-                  className='text-gray-900 hover:text-secondary font-medium transition-colors py-8 px-1 tracking-wider text-xs xl:text-sm uppercase'
+                  className='text-gray-900 hover:text-secondary font-medium transition-colors py-8 px-1 tracking-wider text-[10px] lg:text-[11px] xl:text-xs 2xl:text-sm uppercase'
                 >
                   {link.label}
                 </Link>
