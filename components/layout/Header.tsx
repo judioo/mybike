@@ -48,8 +48,11 @@ const Header = () => {
       ]
     },
     { href: '/in-store', label: 'IN-STORE' },
-    { href: '/contact', label: 'CONTACT US' },
     { href: '/brands', label: 'BRANDS' },
+    { href: '/racing-team', label: 'RACING TEAM' },
+    { href: '/performance-center', label: 'PERFORMANCE' },
+    { href: '/rental-bikes', label: 'RENTALS' },
+    { href: '/rewards', label: 'REWARDS' },
   ];
 
   return (
@@ -61,6 +64,7 @@ const Header = () => {
           <div className='hidden md:flex items-center space-x-6'>
             <Link href='/find-store' className='text-sm hover:underline'>Store Locator</Link>
             <Link href='/support' className='text-sm hover:underline'>Support</Link>
+            <Link href='/contact' className='text-sm hover:underline'>Contact Us</Link>
             <Link href='/en' className='text-sm hover:underline flex items-center'>
               <span className='mr-1'>EN</span>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
@@ -80,7 +84,7 @@ const Header = () => {
           >
             <div className='h-12'>
               <Image 
-                src="/images/logo-black.svg" 
+                src="/images/logo-black-new.svg" 
                 alt="MyBike Logo" 
                 width={140} 
                 height={48} 
@@ -91,7 +95,7 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav
-            className='hidden md:flex items-center space-x-12'
+            className='hidden lg:flex items-center space-x-6 xl:space-x-8'
             aria-label='Main navigation'
           >
             {navigationLinks.map((link) => (
@@ -103,7 +107,7 @@ const Header = () => {
               >
                 <Link
                   href={link.href}
-                  className='text-gray-900 hover:text-secondary font-medium transition-colors py-8 px-2 tracking-wider text-sm uppercase'
+                  className='text-gray-900 hover:text-secondary font-medium transition-colors py-8 px-1 tracking-wider text-xs xl:text-sm uppercase'
                 >
                   {link.label}
                 </Link>
@@ -247,7 +251,7 @@ const Header = () => {
 
             {/* Mobile Menu Toggle */}
             <button
-              className='md:hidden p-2 text-gray-500 hover:text-blue-600 transition-colors'
+              className='lg:hidden p-2 text-gray-500 hover:text-blue-600 transition-colors'
               onClick={toggleMobileMenu}
               aria-label='Toggle mobile menu'
               aria-expanded={isMobileMenuOpen}

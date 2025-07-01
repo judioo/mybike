@@ -4,39 +4,48 @@ import Image from 'next/image';
 export default function Home() {
   return (
     <div className='bg-background'>
-      {/* Hero Section */}
-      <section className='relative h-[90vh] flex items-center'>
+      {/* Hero Section - Cervelo Aspero-5 */}
+      <section className='relative h-[54vh]'>
         <div className='absolute inset-0 z-0'>
           <Image 
-            src="/images/hero/hero-bg.jpg" 
-            alt="Premium road bike" 
+            src="/images/Bike Racer Banner Image.png" 
+            alt="Cervelo Aspero-5" 
             fill 
-            style={{objectFit: 'cover'}} 
+            className="object-cover" 
             priority
           />
-          <div className='absolute inset-0 bg-black bg-opacity-40'></div>
         </div>
         
-        <div className='relative z-10 w-full max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 text-white'>
-          <div className='max-w-3xl lg:max-w-4xl'>
-            <h1 className='text-5xl sm:text-6xl lg:text-7xl font-bold mb-8 leading-tight tracking-wide uppercase'>
-              CELEBRATE THE <br />
-              <span className='text-secondary'>Tour de France</span> at MyBike
+        <div className='absolute top-0 left-0 h-full w-full z-10 flex flex-col justify-center'>
+          <div className='pl-6 sm:pl-10 lg:pl-16 xl:pl-24 text-white'>
+            <div className='tracking-widest uppercase text-lg md:text-xl font-medium mb-6'>MEET THE NEW</div>
+            
+            <h1 className='font-bold tracking-widest uppercase leading-none mb-10 text-5xl md:text-6xl lg:text-8xl'>
+              CERVELO<br/>
+              ASPERO-5
             </h1>
-            <p className='text-xl lg:text-2xl mb-10 text-gray-100 max-w-3xl'>
-              Watch the tour live from 5-27th July at any MyBike Fan Zones and stand a chance to win exciting prizes.
-            </p>
+            
+            <div className='w-full pr-6 sm:pr-10 lg:pr-16 xl:pr-24'>
+              <p className='text-lg md:text-xl leading-relaxed mb-10'>
+                Get ready to race with the most aerodynamic gravel bike ever.  
+              </p>
+            </div>
 
-            {/* CTA Button */}
-            <Link
-              href='/tour-de-france'
-              className='inline-block bg-secondary hover:bg-opacity-90 text-white px-10 py-5 font-medium transition-colors uppercase tracking-wider text-lg'
-            >
-              Discover More
-            </Link>
+            <div>
+              <Link
+                href='/products/cervelo-aspero-5'
+                className='inline-block bg-white text-black hover:bg-secondary hover:text-white px-8 py-4 uppercase tracking-wider font-medium transition-colors'
+              >
+                SHOP NOW
+              </Link>
+            </div>
           </div>
         </div>
       </section>
+      
+
+      
+      {/* New Arrivals Section */}
 
       {/* Featured Categories - Large Banner Style */}
       <section className='py-24'>
@@ -49,7 +58,7 @@ export default function Home() {
             {/* Category 1 */}
             <div className='category-card group h-[400px] lg:h-[450px]'>
               <Image 
-                src="/images/categories/road-bikes.jpg" 
+                src="https://images.pexels.com/photos/5465164/pexels-photo-5465164.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1" 
                 alt="Road Bikes" 
                 fill 
                 className="object-cover transition-transform duration-700 group-hover:scale-105" 
@@ -66,7 +75,7 @@ export default function Home() {
             {/* Category 2 */}
             <div className='category-card group h-[400px] lg:h-[450px]'>
               <Image 
-                src="/images/categories/mountain-bikes.jpg" 
+                src="https://images.pexels.com/photos/100582/pexels-photo-100582.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1" 
                 alt="Mountain Bikes" 
                 fill 
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -82,7 +91,7 @@ export default function Home() {
             {/* Category 3 */}
             <div className='category-card group h-[400px] lg:h-[450px]'>
               <Image 
-                src="/images/categories/clothing.jpg" 
+                src="https://images.pexels.com/photos/5067778/pexels-photo-5067778.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&dpr=1" 
                 alt="Cycling Clothing" 
                 fill 
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -98,7 +107,7 @@ export default function Home() {
             {/* Category 4 */}
             <div className='category-card group h-[400px] lg:h-[450px]'>
               <Image 
-                src="/images/categories/accessories.jpg" 
+                src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop&crop=center" 
                 alt="Cycling Accessories" 
                 fill 
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -124,7 +133,7 @@ export default function Home() {
             {/* Featured Section 1 */}
             <div className='relative h-[550px] lg:h-[650px] overflow-hidden group'>
               <Image 
-                src="/images/featured/preloved.jpg" 
+                src="https://images.pexels.com/photos/2539400/pexels-photo-2539400.jpeg?auto=compress&cs=tinysrgb&w=1200&h=800&dpr=1" 
                 alt="Preloved Bikes" 
                 fill 
                 className="object-cover transition-transform duration-700 group-hover:scale-105" 
@@ -142,7 +151,7 @@ export default function Home() {
             {/* Featured Section 2 */}
             <div className='relative h-[550px] lg:h-[650px] overflow-hidden group'>
               <Image 
-                src="/images/featured/trainers.jpg" 
+                src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&h=800&fit=crop&crop=center" 
                 alt="Indoor Trainers" 
                 fill 
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -178,7 +187,7 @@ export default function Home() {
             <div className='group'>
               <div className='aspect-w-16 aspect-h-10 bg-gray-100 mb-6 relative overflow-hidden'>
                 <Image 
-                  src="/images/blog/blog-1.jpg" 
+                  src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&h=400&fit=crop&crop=center" 
                   alt="Blog post" 
                   fill 
                   className="object-cover transition-transform duration-700 group-hover:scale-105" 
@@ -203,7 +212,7 @@ export default function Home() {
             <div className='group'>
               <div className='aspect-w-16 aspect-h-10 bg-gray-100 mb-6 relative overflow-hidden'>
                 <Image 
-                  src="/images/blog/blog-2.jpg" 
+                  src="https://images.unsplash.com/photo-1544191696-15693072b5a3?w=600&h=400&fit=crop&crop=center" 
                   alt="Blog post" 
                   fill 
                   className="object-cover transition-transform duration-700 group-hover:scale-105" 
@@ -228,7 +237,7 @@ export default function Home() {
             <div className='group'>
               <div className='aspect-w-16 aspect-h-10 bg-gray-100 mb-6 relative overflow-hidden'>
                 <Image 
-                  src="/images/blog/blog-3.jpg" 
+                  src="https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=600&h=400&fit=crop&crop=center" 
                   alt="Blog post" 
                   fill 
                   className="object-cover transition-transform duration-700 group-hover:scale-105" 
