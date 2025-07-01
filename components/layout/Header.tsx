@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCartStore, useUIStore } from '@/lib/stores';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const Header = () => {
   const cartItemCount = useCartStore((state) => state.getTotalItems());
@@ -55,26 +56,42 @@ const Header = () => {
     <>
       {/* Announcement Bar */}
       <div className='announcement-bar'>
-        Enjoy free shipping across UAE on all orders over 500 AED—fast, reliable, and hassle-free! 🚚✨
+        <div className='max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 flex items-center justify-center md:justify-between'>
+          <p className='text-sm md:text-base font-medium tracking-wide'>Enjoy free shipping across UAE on all orders over 500 AED—fast, reliable, and hassle-free! 🚚✨</p>
+          <div className='hidden md:flex items-center space-x-6'>
+            <Link href='/find-store' className='text-sm hover:underline'>Store Locator</Link>
+            <Link href='/support' className='text-sm hover:underline'>Support</Link>
+            <Link href='/en' className='text-sm hover:underline flex items-center'>
+              <span className='mr-1'>EN</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </Link>
+          </div>
+        </div>
       </div>
       
       <header className='sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200'>
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-          <div className='flex items-center justify-between h-20'>
+        <div className='max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16'>
+          <div className='flex items-center justify-between h-24'>
           {/* Logo/Brand */}
           <Link
             href='/'
             className='flex items-center space-x-2 text-xl font-bold text-gray-900 hover:text-gray-700 transition-colors'
             aria-label='MyBike Home'
           >
-            <div className='h-10'>
-              <span className='text-primary font-bold text-2xl tracking-tight'>MYBIKE</span>
+            <div className='h-12'>
+              <Image 
+                src="/images/logo-black.svg" 
+                alt="MyBike Logo" 
+                width={140} 
+                height={48} 
+                className="object-contain"
+              />
             </div>
           </Link>
 
           {/* Desktop Navigation */}
           <nav
-            className='hidden md:flex items-center space-x-8'
+            className='hidden md:flex items-center space-x-12'
             aria-label='Main navigation'
           >
             {navigationLinks.map((link) => (
@@ -86,7 +103,7 @@ const Header = () => {
               >
                 <Link
                   href={link.href}
-                  className='text-gray-900 hover:text-secondary font-medium transition-colors py-8 px-2 tracking-wide'
+                  className='text-gray-900 hover:text-secondary font-medium transition-colors py-8 px-2 tracking-wider text-sm uppercase'
                 >
                   {link.label}
                 </Link>
@@ -94,25 +111,41 @@ const Header = () => {
                 {/* Mega Menu */}
                 {link.megaMenu && activeMenu === link.label && (
                   <div className='mega-menu'>
-                    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-6 gap-8'>
-                      <div className='col-span-4'>
-                        <div className='grid grid-cols-3 gap-8'>
-                          {link.categories?.map((category) => (
-                            <div key={category.href}>
-                              <Link 
-                                href={category.href}
-                                className='text-base font-medium text-gray-900 hover:text-secondary'
-                              >
-                                {category.title}
-                              </Link>
-                            </div>
-                          ))}
+                    <div className='max-w-[1600px] mx-auto px-6 sm:px-10 lg:px-16 py-8'>
+                      <div className='grid grid-cols-6 gap-12'>
+                        <div className='col-span-4'>
+                          <h3 className='text-lg font-medium text-gray-900 mb-6 uppercase tracking-wider'>Categories</h3>
+                          <div className='grid grid-cols-3 gap-x-12 gap-y-6'>
+                            {link.categories?.map((category) => (
+                              <div key={category.href} className='border-b border-gray-100 pb-2'>
+                                <Link 
+                                  href={category.href}
+                                  className='text-base font-medium text-gray-900 hover:text-secondary transition-colors'
+                                >
+                                  {category.title}
+                                </Link>
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                      <div className='col-span-2 bg-gray-100 p-6 rounded'>
-                        <h3 className='text-lg font-medium text-gray-900 mb-4'>Featured</h3>
-                        <div className='aspect-w-16 aspect-h-9 bg-gray-300 mb-4 rounded'></div>
-                        <p className='text-sm text-gray-600'>Discover our latest collection of premium bikes and accessories.</p>
+                        <div className='col-span-2'>
+                          <h3 className='text-lg font-medium text-gray-900 mb-6 uppercase tracking-wider'>Featured</h3>
+                          <div className='relative aspect-[16/10] bg-gray-100 mb-4 overflow-hidden'>
+                            <Image 
+                              src="/images/categories/road-bikes.jpg"
+                              alt="Featured category"
+                              fill
+                              className="object-cover hover:scale-105 transition-transform duration-700"
+                            />
+                          </div>
+                          <p className='text-sm text-gray-600 mb-3'>Discover our latest collection of premium bikes and accessories.</p>
+                          <Link 
+                            href="/explore/new-arrivals"
+                            className='text-secondary hover:underline text-sm font-medium'
+                          >
+                            Shop New Arrivals
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -122,7 +155,7 @@ const Header = () => {
           </nav>
 
           {/* User Actions */}
-          <div className='flex items-center space-x-6'>
+          <div className='flex items-center space-x-8'>
             {/* Search Icon */}
             <button
               className='p-2 text-gray-900 hover:text-secondary transition-colors'
@@ -142,6 +175,27 @@ const Header = () => {
                 />
               </svg>
             </button>
+
+            {/* Wishlist Icon */}
+            <Link
+              href='/wishlist'
+              className='p-2 text-gray-900 hover:text-secondary transition-colors'
+              aria-label='Wishlist'
+            >
+              <svg 
+                className='w-5 h-5' 
+                fill='none' 
+                stroke='currentColor' 
+                viewBox='0 0 24 24'
+              >
+                <path 
+                  strokeLinecap='round' 
+                  strokeLinejoin='round' 
+                  strokeWidth={2} 
+                  d='M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
+                />
+              </svg>
+            </Link>
 
             {/* Account Icon */}
             <Link
@@ -233,16 +287,16 @@ const Header = () => {
 
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className='md:hidden border-t border-gray-200 py-4'>
+          <div className='md:hidden border-t border-gray-200 py-6 bg-white'>
             <nav
-              className='flex flex-col space-y-4'
+              className='flex flex-col space-y-5 px-6'
               aria-label='Mobile navigation'
             >
               {navigationLinks.map((link) => (
                 <div key={link.href} className='flex flex-col'>
                   <Link
                     href={link.href}
-                    className='px-3 py-2 text-gray-900 font-medium hover:text-secondary transition-colors'
+                    className='py-2 text-gray-900 font-medium hover:text-secondary transition-colors uppercase tracking-wider text-sm'
                     onClick={closeMobileMenu}
                   >
                     {link.label}
@@ -250,12 +304,12 @@ const Header = () => {
                   
                   {/* Mobile submenu categories */}
                   {link.megaMenu && (
-                    <div className='pl-6 mt-2 space-y-2'>
+                    <div className='pl-4 mt-3 space-y-3 border-l border-gray-100'>
                       {link.categories?.map((category) => (
                         <Link
                           key={category.href}
                           href={category.href}
-                          className='block px-3 py-1 text-sm text-gray-700 hover:text-secondary'
+                          className='block py-1 text-sm text-gray-700 hover:text-secondary transition-colors'
                           onClick={closeMobileMenu}
                         >
                           {category.title}
@@ -265,6 +319,18 @@ const Header = () => {
                   )}
                 </div>
               ))}
+              
+              <div className='pt-4 mt-4 border-t border-gray-100'>
+                <Link href='/find-store' className='block py-2 text-sm text-gray-700 hover:text-secondary'>
+                  Store Locator
+                </Link>
+                <Link href='/support' className='block py-2 text-sm text-gray-700 hover:text-secondary'>
+                  Support
+                </Link>
+                <Link href='/wishlist' className='block py-2 text-sm text-gray-700 hover:text-secondary'>
+                  Wishlist
+                </Link>
+              </div>
             </nav>
           </div>
         )}
