@@ -1,16 +1,16 @@
 @import 'tailwindcss';
 
 :root {
-  /* Light theme colors - Bicycle industry inspired */
+  /* Light theme colors - Wolfi-inspired premium palette */
   --background: #ffffff;
   --foreground: #1a1a1a;
 
-  /* Brand colors - Professional cycling palette */
-  --primary: #2563eb; /* Strong blue - trust, reliability */
+  /* Brand colors - Premium cycling palette */
+  --primary: #000000; /* Black - luxury, premium */
   --primary-foreground: #ffffff;
-  --secondary: #f97316; /* Energy orange - speed, excitement */
+  --secondary: #d4a017; /* Gold - premium, quality */
   --secondary-foreground: #ffffff;
-  --accent: #10b981; /* Green - eco-friendly, outdoor */
+  --accent: #0f766e; /* Teal - distinctive, sophisticated */
   --accent-foreground: #ffffff;
 
   /* Neutral palette */
@@ -162,11 +162,13 @@ body {
 .price-current {
   font-weight: 600;
   color: var(--foreground);
+  font-size: 1.125rem;
 }
 
 .price-original {
   text-decoration: line-through;
   color: var(--muted-foreground);
+  margin-right: 0.5rem;
 }
 
 .price-sale {
@@ -175,6 +177,15 @@ body {
 }
 
 /* Status badges */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .badge-new {
   background-color: var(--new);
   color: var(--success-foreground);
@@ -188,4 +199,66 @@ body {
 .badge-sale {
   background-color: var(--sale);
   color: var(--destructive-foreground);
+}
+
+/* Wolfi-inspired navigation */
+.mega-menu {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  background: white;
+  padding: 2rem 0;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.nav-item:hover .mega-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Premium category display */
+.category-card {
+  position: relative;
+  overflow: hidden;
+  height: 300px;
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.category-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s ease;
+}
+
+.category-card:hover img {
+  transform: scale(1.05);
+}
+
+.category-card-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.5rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+  color: white;
+}
+
+/* Announcement bar */
+.announcement-bar {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  text-align: center;
+  padding: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.025em;
 }

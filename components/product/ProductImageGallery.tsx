@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import ProductImageOptimizer from './ProductImageOptimizer';
 import ImageGalleryWrapper from './ImageGalleryWrapper';
 import Script from 'next/script';
-import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import { Product } from '@/types/product';
 
 // Dynamically import Next.js Image component to avoid SSR issues
 const NextImage = dynamic(() => import('next/image'), {
@@ -27,7 +27,7 @@ interface ProductImageGalleryProps {
   images?: ProductImage[];
   productTitle?: string;
   className?: string;
-  product?: any; // Allow passing a full product object
+  product?: Product; // Allow passing a full product object
 }
 
 export default function ProductImageGallery({
@@ -51,7 +51,7 @@ export default function ProductImageGallery({
 
   // Process images for react-image-gallery format
   const galleryImages = (product?.images?.length ?? 0) > 0 || (images?.length ?? 0) > 0
-    ? (product?.images || images || []).map((image: ProductImage, index: number) => {
+    ? ((product?.images || images || []) as ProductImage[]).map((image: ProductImage, index: number) => {
         const imageSrc = image.src || image.url || image.originalSrc || image.transformedSrc || placeholderImage;
         const imageAlt = image.alt || `${title} - Image ${index + 1}`;
 
@@ -120,7 +120,6 @@ export default function ProductImageGallery({
           `,
         }}
       />
-      </Script>
 
       {isClient ? (
         <ImageGalleryWrapper
@@ -165,21 +164,25 @@ export default function ProductImageGallery({
         <div className="aspect-square bg-gray-100 rounded-lg">
           {(product?.images?.length ?? 0) > 0 ? (
             <img
-              src={product.images[0].src || ''}
-              alt={product.images[0].alt || title}
+              src={product?.images?.[0]?.src || ''}
+              alt={product?.images?.[0]?.alt || title}
               width={800}
               height={800}
               className="object-contain w-full h-full"
             />
-          ) : (images?.length ?? 0) > 0 && images[0].src ? (
+          ) : (images?.length ?? 0) > 0 && images?.[0]?.src ? (
             <img
-              src={images[0].src}
-              alt={images[0].alt || title}
+              src={images?.[0]?.src || ''}
+              alt={images?.[0]?.alt || title}
               width={800}
               height={800}
               className="object-contain w-full h-full"
             />
-          ) : null}
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-100">
+              <span className="text-gray-400">No image available</span>
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import Image from 'next/image';
+import { FaFacebook, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -116,44 +118,86 @@ const Footer = () => {
   ];
 
   return (
-    <footer className='bg-gray-900 text-white'>
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
-        {/* Main Footer Content */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8'>
+    <footer className='bg-primary text-white'>
+      {/* Newsletter Bar */}
+      <div className='border-b border-gray-700 py-10'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+          <div className='flex flex-col md:flex-row justify-between items-center gap-6'>
+            <div>
+              <h3 className='text-xl font-bold uppercase tracking-wider mb-1'>Subscribe to our newsletter</h3>
+              <p className='text-gray-300'>Stay updated with the latest news and exclusive offers</p>
+            </div>
+            <div className='flex w-full md:w-auto'>
+              <input 
+                type='email' 
+                placeholder='Your email address' 
+                className='px-4 py-3 bg-gray-800 border border-gray-700 text-white w-full md:w-64 focus:outline-none focus:ring-1 focus:ring-secondary'
+              />
+              <button className='bg-secondary hover:bg-opacity-90 px-6 py-3 uppercase tracking-wider font-medium transition-colors'>
+                Subscribe
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Main Footer Content */}
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16'>
+        <div className='grid grid-cols-1 md:grid-cols-5 gap-10'>
           {/* Company Info */}
-          <div className='lg:col-span-2'>
-            <Link href='/' className='flex items-center space-x-2 mb-4'>
-              <div className='w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center'>
-                <span className='text-white font-bold text-sm'>MB</span>
-              </div>
-              <span className='text-xl font-bold'>MyBike</span>
-            </Link>
-            <p className='text-gray-400 mb-6 max-w-md'>
-              Your premier destination for quality bicycles, expert services,
-              and cycling accessories. Helping riders of all levels find their
-              perfect ride since 2010.
+          <div className='col-span-2'>
+            <div className='mb-6'>
+              <Image src="/images/logo-white.svg" alt="MyBike" width={120} height={40} />
+            </div>
+            <p className='text-gray-300 mb-6 leading-relaxed'>
+              MyBike is your premier destination for quality bicycles, expert services,
+              and premium cycling accessories. With over two decades of experience in the UAE,
+              we're dedicated to ensuring our riders feel supported on every journey.
             </p>
-
-            {/* Contact Info */}
-            <div className='space-y-2 text-sm text-gray-400'>
-              <p>📍 123 Cycling Street, Bike City, BC 12345</p>
-              <p>📞 +1 (555) 123-BIKE</p>
-              <p>✉️ hello@mybike.com</p>
+            <div className='flex space-x-6'>
+              <a
+                href='https://facebook.com/mybike'
+                className='text-gray-300 hover:text-secondary transition-colors'
+                aria-label="Facebook"
+              >
+                <FaFacebook size={22} />
+              </a>
+              <a
+                href='https://twitter.com/mybike'
+                className='text-gray-300 hover:text-secondary transition-colors'
+                aria-label="Twitter"
+              >
+                <FaTwitter size={22} />
+              </a>
+              <a
+                href='https://instagram.com/mybike'
+                className='text-gray-300 hover:text-secondary transition-colors'
+                aria-label="Instagram"
+              >
+                <FaInstagram size={22} />
+              </a>
+              <a
+                href='https://youtube.com/mybike'
+                className='text-gray-300 hover:text-secondary transition-colors'
+                aria-label="YouTube"
+              >
+                <FaYoutube size={22} />
+              </a>
             </div>
           </div>
 
           {/* Footer Links */}
           {footerSections.map((section) => (
             <div key={section.title}>
-              <h3 className='text-sm font-semibold text-gray-300 uppercase tracking-wider mb-4'>
+              <h3 className='text-lg font-bold mb-6 uppercase tracking-wider'>
                 {section.title}
               </h3>
-              <ul className='space-y-3'>
+              <ul className='space-y-4'>
                 {section.links.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className='text-gray-400 hover:text-white transition-colors text-sm'
+                      className='text-gray-300 hover:text-secondary transition-colors'
                     >
                       {link.label}
                     </Link>
@@ -164,61 +208,50 @@ const Footer = () => {
           ))}
         </div>
 
-        {/* Newsletter Signup */}
-        <div className='border-t border-gray-800 mt-12 pt-8'>
-          <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between'>
-            <div className='mb-4 lg:mb-0'>
-              <h3 className='text-lg font-semibold mb-2'>Stay in the Loop</h3>
-              <p className='text-gray-400 text-sm'>
-                Get the latest cycling news, product updates, and exclusive
-                offers.
-              </p>
-            </div>
-            <div className='flex flex-col sm:flex-row gap-2 max-w-md'>
-              <input
-                type='email'
-                placeholder='Enter your email'
-                className='flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent'
-              />
-              <button className='px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors'>
-                Subscribe
-              </button>
-            </div>
+        {/* Bottom Bar */}
+        <div className='border-t border-gray-700 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center'>
+          <p className='text-gray-300 text-sm mb-4 md:mb-0'>
+            &copy; {currentYear} MyBike. All rights reserved.
+          </p>
+          <div className='flex flex-wrap justify-center gap-6'>
+            <Link
+              href='/privacy-policy'
+              className='text-gray-300 hover:text-secondary transition-colors text-sm'
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href='/terms-of-service'
+              className='text-gray-300 hover:text-secondary transition-colors text-sm'
+            >
+              Terms of Service
+            </Link>
+            <Link
+              href='/cookie-policy'
+              className='text-gray-300 hover:text-secondary transition-colors text-sm'
+            >
+              Cookie Policy
+            </Link>
+            <Link
+              href='/sitemap'
+              className='text-gray-300 hover:text-secondary transition-colors text-sm'
+            >
+              Sitemap
+            </Link>
           </div>
         </div>
-
-        {/* Social Links & Copyright */}
-        <div className='border-t border-gray-800 mt-8 pt-8 flex flex-col sm:flex-row items-center justify-between'>
-          <div className='flex items-center space-x-6 mb-4 sm:mb-0'>
-            {socialLinks.map((social) => (
-              <Link
-                key={social.href}
-                href={social.href}
-                className='text-gray-400 hover:text-white transition-colors'
-                aria-label={social.label}
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                {social.icon}
-              </Link>
-            ))}
-          </div>
-          <div className='flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6 text-sm text-gray-400'>
-            <span>&copy; {currentYear} MyBike. All rights reserved.</span>
-            <div className='flex space-x-4'>
-              <Link
-                href='/privacy'
-                className='hover:text-white transition-colors'
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                href='/terms'
-                className='hover:text-white transition-colors'
-              >
-                Terms of Service
-              </Link>
-            </div>
+      </div>
+      
+      {/* Payment Methods Bar */}
+      <div className='border-t border-gray-700 py-6'>
+        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4'>
+          <div className='text-sm text-gray-400'>We accept all major payment methods</div>
+          <div className='flex gap-4'>
+            <Image src="/images/payment/visa.svg" alt="Visa" width={40} height={25} />
+            <Image src="/images/payment/mastercard.svg" alt="Mastercard" width={40} height={25} />
+            <Image src="/images/payment/amex.svg" alt="American Express" width={40} height={25} />
+            <Image src="/images/payment/apple-pay.svg" alt="Apple Pay" width={40} height={25} />
+            <Image src="/images/payment/paypal.svg" alt="PayPal" width={40} height={25} />
           </div>
         </div>
       </div>

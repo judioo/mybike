@@ -43,26 +43,30 @@ interface ProductImageOptimizerProps {
  */
 export default function ProductImageOptimizer({
   image,
+  src,
+  alt,
   sizes = '(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw',
   priority = false,
   className = '',
   fill = false,
   quality = 85,
-  alt,
   width = 800,
   height = 800,
 }: ProductImageOptimizerProps) {
-  // Extract image properties
-  const src = image.src;
-  const imageAlt = alt || image.alt || 'Product image';
-  
-  // Track if we're on the client side
   const [isClient, setIsClient] = useState(false);
-  
+
+  // Use effect to check if we're on the client side
   useEffect(() => {
     setIsClient(true);
   }, []);
-  
+
+  // Extract image properties - support both direct props and image object
+  const imageSrc = src || (image?.src) || '/api/placeholder/800/800';
+  const imageAlt = alt || (image?.alt) || 'Product image';
+  // Use provided dimensions or defaults
+  const imageWidth = width || 800;
+  const imageHeight = height || 800;
+
   // Generate placeholder
   const placeholder = 'blur';
   
@@ -75,7 +79,7 @@ export default function ProductImageOptimizer({
   return fill ? (
     <div className={`relative ${className}`}>
       <ImageComponent
-        src={src}
+        src={imageSrc}
         alt={imageAlt}
         fill
         sizes={sizes}
@@ -88,10 +92,10 @@ export default function ProductImageOptimizer({
     </div>
   ) : (
     <ImageComponent
-      src={src}
+      src={imageSrc}
       alt={imageAlt}
-      width={width}
-      height={height}
+      width={imageWidth}
+      height={imageHeight}
       sizes={sizes}
       priority={priority}
       quality={quality}

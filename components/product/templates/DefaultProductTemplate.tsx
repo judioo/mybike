@@ -11,6 +11,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { detectRichMedia } from '@/components/product/ProductTemplateManager';
 import { MediaItem } from '@/types/media';
+import { Metafield } from '@/types/product';
 
 // Lazy load review components to reduce initial bundle size
 const ReviewSection = dynamic(
@@ -97,7 +98,7 @@ export default function DefaultProductTemplate({
               <div className={`mt-6 w-full bg-gray-50 rounded-lg p-4 ${templateSuffix ? `media-${templateSuffix}` : ''}`}>
                 <h3 className="text-lg font-medium text-gray-900 mb-3">Product Media</h3>
                 <div className="aspect-w-16 aspect-h-9">
-                  {richMedia.length > 0 && (
+                  {richMedia && richMedia.length > 0 && (
                     <RichMediaRenderer 
                       media={richMedia[activeMediaIndex]} 
                       templateSuffix={templateSuffix}
@@ -120,22 +121,14 @@ export default function DefaultProductTemplate({
             {product.tags && product.tags.length > 0 && (
               <div>
                 <h3 className="text-sm font-medium text-gray-900 mb-2">
-                  Features
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {product.tags.map((tag, index) => (
                     <span
-                      key={index}
                       className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
                     >
                       {tag}
                     </span>
-                  ))}
-                </div>
+                  </span>
+                ))}
               </div>
-            )}
-
-            {/* Variant Selector */}
             {product.variants && product.variants.length > 1 && (
               <VariantSelector
                 variants={product.variants}
@@ -169,11 +162,11 @@ export default function DefaultProductTemplate({
 
             {/* Product Specifications */}
             <ProductSpecs
-              metafields={product.metafields}
+              metafields={product.metafields as Metafield[] | undefined}
               product={{
                 vendor: product.vendor,
                 productType: product.productType,
-                weight: product.weight,
+                weight: product.weight as number | undefined,
                 tags: product.tags,
                 handle: product.handle,
                 createdAt: product.createdAt,
