@@ -3,19 +3,24 @@ import { Product, Review } from '@/types/product';
 import { MediaItem } from '@/types/media';
 import ProductImageGallery from '@/components/product/ProductImageGallery';
 import VariantSelector from '@/components/product/VariantSelector';
+import ProductMetadata from '@/components/product/ProductMetadata';
 import AddToCartButton from '@/components/product/AddToCartButton';
 import ProductSpecs from '@/components/product/ProductSpecs';
-import RecentlyViewedProducts from '@/components/product/RecentlyViewedProducts';
+import RecentlyViewedProducts from '../RecentlyViewedProducts';
+import ProductGridSection from '../ProductGridSection';
 import RelatedProducts from '@/components/product/RelatedProducts';
 import RichMediaRenderer from '@/components/product/RichMediaRenderer';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { detectRichMedia } from '@/components/product/ProductTemplateManager';
 
+// Import ReviewSection component directly for type access
+import ReviewSectionComponent from '@/components/product/reviews/ReviewSection';
+
 // Define ReviewSection component
 const ReviewSection = dynamic(
   () => import('@/components/product/reviews/ReviewSection'),
-  { 
+  {
     loading: () => <div className="animate-pulse bg-gray-100 h-64 w-full rounded-lg"></div>,
     ssr: false
   }
@@ -200,15 +205,42 @@ export default function DefaultProductTemplate({
           </div>
 
           {/* Customer Reviews */}
-          <Suspense fallback={<div className="mt-16 border-t border-gray-200 pt-8 animate-pulse bg-gray-100 h-64 w-full rounded-lg"></div>}>
-            {product.reviews && product.reviews.length > 0 && (
-              <ReviewSection 
-                reviews={product.reviews} 
-                productId={product.id.toString()}
-                productTitle={product.title}
-                initialLimit={5} 
-              />
-            )}
+          <Suspense fallback={
+            <div className="mt-16 border-t border-gray-200 pt-8">
+              <div className="h-8 bg-gray-200 rounded w-48 animate-pulse mb-6"></div>
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                <div className="lg:col-span-1 bg-gray-100 h-64 rounded-lg animate-pulse"></div>
+                <div className="lg:col-span-3 bg-gray-100 h-64 rounded-lg animate-pulse"></div>
+              </div>
+            </div>
+          }>
+            <ReviewSection 
+              reviews={product.reviews || []} 
+              product={product}
+              initialLimit={5}
+              templateSuffix={templateSuffix}
+            />
+          </Suspense>
+          
+          {/* Product Metadata */}
+          <Suspense fallback={
+            <div className="bg-white rounded-lg shadow-sm p-6 mt-8">
+              <div className="h-6 bg-gray-200 rounded w-48 animate-pulse mb-4"></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
+                  ))}
+                </div>
+                <div className="space-y-3">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="h-4 bg-gray-200 rounded w-full animate-pulse"></div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          }>
+            <ProductMetadata product={product} />
           </Suspense>
 
           {/* Product Specifications */}
@@ -221,24 +253,37 @@ export default function DefaultProductTemplate({
               tags: product.tags,
               handle: product.handle as string,
               createdAt: product.createdAt,
+              updatedAt: product.updatedAt
             }}
           />
         </div>
       </div>
 
       {/* Recently Viewed Products */}
-      <div className="mt-16">
-        <RecentlyViewedProducts
-          currentProductId={product.id}
-          maxItems={6}
-        />
-      </div>
+      <Suspense fallback={<ProductGridSection.Skeleton />}>
+        <div className="mt-16">
+          <RecentlyViewedProducts
+            currentProductId={product.id}
+            maxItems={6}
+          />
+        </div>
+      </Suspense>
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
-        <div className="mt-16">
-          <RelatedProducts products={relatedProducts} />
-        </div>
+        <Suspense fallback={<ProductGridSection.Skeleton />}>
+          <div className="mt-16">
+            <RelatedProducts 
+              products={relatedProducts} 
+              templateSuffix={templateSuffix}
+              viewAllLink={product.productType ? 
+                `/collections/${product.productType.toLowerCase().replace(/\s+/g, '-')}` : 
+                undefined
+              }
+              showViewAll={!!product.productType}
+            />
+          </div>
+        </Suspense>
       )}
     </div>
   );

@@ -309,7 +309,7 @@
               2
             ],
             "details": "Fetch and render reviews, ratings, and additional metadata, supporting user submissions if required.",
-            "status": "pending"
+            "status": "done"
           },
           {
             "id": 10,
@@ -331,7 +331,7 @@
               3
             ],
             "details": "Create consistent navigation between product grid and detail pages. Implement related products section using existing ProductGrid components.",
-            "status": "pending"
+            "status": "in-progress"
           }
         ]
       },
@@ -520,7 +520,7 @@
     ],
     "metadata": {
       "created": "2025-06-16T19:55:14.944Z",
-      "updated": "2025-07-06T17:09:28.593Z",
+      "updated": "2025-07-06T17:24:08.354Z",
       "description": "Tasks for master context"
     }
   }

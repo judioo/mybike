@@ -15,6 +15,7 @@ interface ProductSpecsProps {
     tags?: string[];
     handle?: string;
     createdAt?: string;
+    updatedAt?: string;
   };
 }
 

@@ -5,9 +5,10 @@ import ReviewStar from './ReviewStar';
 interface ReviewSummaryProps {
   reviews: Review[];
   productId: string;
+  onWriteReviewClick?: () => void;
 }
 
-export default function ReviewSummary({ reviews, productId }: ReviewSummaryProps) {
+export default function ReviewSummary({ reviews, productId, onWriteReviewClick }: ReviewSummaryProps) {
   // Calculate average rating
   const averageRating = reviews.length > 0
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
@@ -73,7 +74,9 @@ export default function ReviewSummary({ reviews, productId }: ReviewSummaryProps
       <div className="mt-6">
         <button
           type="button"
-          className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          onClick={onWriteReviewClick}
+          className="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+          aria-label="Write a review"
         >
           Write a Review
         </button>

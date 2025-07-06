@@ -1,21 +1,47 @@
 import { Product } from '@/types/product';
-import ProductGrid from '@/components/catalog/ProductGrid';
+import ProductGridSection from '@/components/product/ProductGridSection';
 
 interface RelatedProductsProps {
   products: Product[];
   title?: string;
+  description?: string;
+  viewAllLink?: string;
+  viewAllText?: string;
+  limit?: number;
+  showViewAll?: boolean;
+  templateSuffix?: string;
+  className?: string;
 }
 
 export default function RelatedProducts({
   products,
   title = 'Related Products',
+  description = 'Products similar to what you\'re viewing',
+  viewAllLink,
+  viewAllText,
+  limit = 4,
+  showViewAll = false,
+  templateSuffix = '',
+  className = '',
 }: RelatedProductsProps) {
   if (products.length === 0) return null;
 
   return (
-    <div className='mt-16'>
-      <h2 className='text-2xl font-bold text-gray-900 mb-8'>{title}</h2>
-      <ProductGrid products={products.slice(0, 4)} />
-    </div>
+    <ProductGridSection
+      products={products}
+      title={title}
+      description={description}
+      viewAllLink={viewAllLink}
+      viewAllText={viewAllText}
+      limit={limit}
+      showViewAll={showViewAll && !!viewAllLink}
+      templateSuffix={templateSuffix}
+      className={className}
+    />
   );
 }
+
+// Add a skeleton loader component
+RelatedProducts.Skeleton = function Skeleton() {
+  return <ProductGridSection.Skeleton />;
+};
