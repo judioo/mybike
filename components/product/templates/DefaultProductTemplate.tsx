@@ -1,5 +1,6 @@
 import React, { Suspense, useState } from 'react';
-import { Product } from '@/types/product';
+import { Product, Review } from '@/types/product';
+import { MediaItem } from '@/types/media';
 import ProductImageGallery from '@/components/product/ProductImageGallery';
 import VariantSelector from '@/components/product/VariantSelector';
 import AddToCartButton from '@/components/product/AddToCartButton';
@@ -10,10 +11,8 @@ import RichMediaRenderer from '@/components/product/RichMediaRenderer';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { detectRichMedia } from '@/components/product/ProductTemplateManager';
-import { MediaItem } from '@/types/media';
-import { Metafield } from '@/types/product';
 
-// Lazy load review components to reduce initial bundle size
+// Define ReviewSection component
 const ReviewSection = dynamic(
   () => import('@/components/product/reviews/ReviewSection'),
   { 
@@ -22,23 +21,39 @@ const ReviewSection = dynamic(
   }
 );
 
+// Define Metafield interface to match ProductSpecs expectations
+interface Metafield {
+  id: string;
+  key: string;
+  value: string;
+  type: string;
+  namespace?: string;
+}
+
 interface DefaultProductTemplateProps {
   product: Product;
   relatedProducts: Product[];
-  richMedia?: any[];
+  richMedia?: MediaItem[];
   templateSuffix?: string;
 }
 
 export default function DefaultProductTemplate({ 
   product, 
-  relatedProducts, 
-  richMedia: propRichMedia, 
+  relatedProducts,
+  richMedia = [],
   templateSuffix = ''
 }: DefaultProductTemplateProps) {
   // Use provided rich media or detect it if not provided
   const [activeMediaIndex, setActiveMediaIndex] = useState(0);
-  const richMedia = propRichMedia || detectRichMedia(product);
-  const hasRichMedia = richMedia && richMedia.length > 0;
+  const mediaItems = richMedia.length > 0 ? richMedia : detectRichMedia(product);
+  
+  // Check if we have any rich media to display
+  const hasRichMedia = mediaItems.length > 0;
+
+  // Handler for changing active media item
+  const handleMediaChange = (index: number) => {
+    setActiveMediaIndex(index);
+  };
 
   return (
     <div className="min-h-screen py-8">
@@ -62,10 +77,10 @@ export default function DefaultProductTemplate({
                   <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
                 </svg>
                 <Link 
-                  href={`/collections/${product.collections?.[0]?.handle || 'all'}`}
+                  href={`/collections/all`}
                   className="ml-4 text-gray-400 hover:text-gray-500"
                 >
-                  {product.collections?.[0]?.title || 'Products'}
+                  Products
                 </Link>
               </div>
             </li>
@@ -93,103 +108,138 @@ export default function DefaultProductTemplate({
           <div className="flex flex-col">
             <ProductImageGallery product={product} />
             
-            {/* Rich media (if available) */}
+            {/* Rich Media (if available) */}
             {hasRichMedia && (
-              <div className={`mt-6 w-full bg-gray-50 rounded-lg p-4 ${templateSuffix ? `media-${templateSuffix}` : ''}`}>
-                <h3 className="text-lg font-medium text-gray-900 mb-3">Product Media</h3>
-                <div className="aspect-w-16 aspect-h-9">
-                  {richMedia && richMedia.length > 0 && (
-                    <RichMediaRenderer 
-                      media={richMedia[activeMediaIndex]} 
-                      templateSuffix={templateSuffix}
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Product Description */}
-            {product.description && (
-              <div className="prose prose-sm text-gray-600 max-w-none">
-                <div
-                  dangerouslySetInnerHTML={{ __html: product.description }}
+              <div className="mb-6">
+                <RichMediaRenderer 
+                  media={mediaItems[activeMediaIndex]} 
+                  className="w-full rounded-lg overflow-hidden" 
+                  templateSuffix={templateSuffix}
                 />
+                
+                {/* Media Navigation (if multiple rich media items) */}
+                {mediaItems.length > 1 && (
+                  <div className="flex mt-4 space-x-2 overflow-x-auto">
+                    {mediaItems.map((item, index) => (
+                      <button
+                        key={index}
+                        className={`w-16 h-16 rounded-md border-2 flex-shrink-0 ${index === activeMediaIndex ? 'border-blue-500' : 'border-gray-200'}`}
+                        onClick={() => handleMediaChange(index)}
+                        aria-label={`View media ${index + 1}`}
+                      >
+                        {/* Media Type Icon */}
+                        <div className="w-full h-full flex items-center justify-center text-gray-500">
+                          {item.type === 'video' && (
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          )}
+                          {(item.type === '3d' || item.type === 'gltf') && (
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
+                            </svg>
+                          )}
+                          {item.type === 'panorama' && (
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                          )}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
+          </div>
 
-            {/* Product Features/Tags */}
-            {product.tags && product.tags.length > 0 && (
-              <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">
-                    <span
-                      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                    >
-                      {tag}
-                    </span>
+          {/* Product Description */}
+          {product.description && (
+            <div className="prose prose-sm text-gray-600 max-w-none">
+              <div
+                dangerouslySetInnerHTML={{ __html: product.description }}
+              />
+            </div>
+          )}
+
+          {/* Product Features/Tags */}
+          {product.tags && product.tags.length > 0 && (
+            <div>
+              <h3 className="text-sm font-medium text-gray-900 mb-2">Features</h3>
+              <div className="flex flex-wrap">
+                {product.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2"
+                  >
+                    {tag}
                   </span>
                 ))}
               </div>
-            {product.variants && product.variants.length > 1 && (
-              <VariantSelector
-                variants={product.variants}
-                selectedVariant={product.variants[0]}
+            </div>
+          )}
+
+          {product.variants && product.variants.length > 1 && (
+            <VariantSelector
+              variants={product.variants}
+              selectedVariant={product.variants[0]}
+            />
+          )}
+
+          {/* Add to Cart */}
+          <AddToCartButton
+            product={product}
+            variant={product.variants?.[0]}
+          />
+
+          {/* Product Description */}
+          <div className="mt-10">
+            <h2 className="text-lg font-medium text-gray-900">Description</h2>
+            <div className="mt-4 prose prose-sm text-gray-500" dangerouslySetInnerHTML={{ __html: product.description }} />
+          </div>
+
+          {/* Customer Reviews */}
+          <Suspense fallback={<div className="mt-16 border-t border-gray-200 pt-8 animate-pulse bg-gray-100 h-64 w-full rounded-lg"></div>}>
+            {product.reviews && product.reviews.length > 0 && (
+              <ReviewSection 
+                reviews={product.reviews} 
+                productId={product.id.toString()}
+                productTitle={product.title}
+                initialLimit={5} 
               />
             )}
+          </Suspense>
 
-            {/* Add to Cart */}
-            <AddToCartButton
-              product={product}
-              variant={product.variants?.[0]}
-            />
-
-            {/* Product Description */}
-            <div className="mt-10">
-              <h2 className="text-lg font-medium text-gray-900">Description</h2>
-              <div className="mt-4 prose prose-sm text-gray-500" dangerouslySetInnerHTML={{ __html: product.description }} />
-            </div>
-
-            {/* Customer Reviews */}
-            <Suspense fallback={<div className="mt-16 border-t border-gray-200 pt-8 animate-pulse bg-gray-100 h-64 w-full rounded-lg"></div>}>
-              {product.reviews && product.reviews.length > 0 && (
-                <ReviewSection 
-                  reviews={product.reviews} 
-                  productId={product.id.toString()}
-                  productTitle={product.title}
-                  initialLimit={5} 
-                />
-              )}
-            </Suspense>
-
-            {/* Product Specifications */}
-            <ProductSpecs
-              metafields={product.metafields as Metafield[] | undefined}
-              product={{
-                vendor: product.vendor,
-                productType: product.productType,
-                weight: product.weight as number | undefined,
-                tags: product.tags,
-                handle: product.handle,
-                createdAt: product.createdAt,
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Recently Viewed Products */}
-        <div className="mt-16">
-          <RecentlyViewedProducts
-            currentProductId={product.id}
-            maxItems={6}
+          {/* Product Specifications */}
+          <ProductSpecs
+            metafields={product.metafields as unknown as Metafield[] | undefined}
+            product={{
+              vendor: product.vendor,
+              productType: product.productType,
+              weight: product.variants?.[0]?.weight || product.variants?.[0]?.grams || undefined,
+              tags: product.tags,
+              handle: product.handle as string,
+              createdAt: product.createdAt,
+            }}
           />
         </div>
-
-        {/* Related Products */}
-        {relatedProducts.length > 0 && (
-          <div className="mt-16">
-            <RelatedProducts products={relatedProducts} />
-          </div>
-        )}
       </div>
+
+      {/* Recently Viewed Products */}
+      <div className="mt-16">
+        <RecentlyViewedProducts
+          currentProductId={product.id}
+          maxItems={6}
+        />
+      </div>
+
+      {/* Related Products */}
+      {relatedProducts.length > 0 && (
+        <div className="mt-16">
+          <RelatedProducts products={relatedProducts} />
+        </div>
+      )}
     </div>
   );
 }
