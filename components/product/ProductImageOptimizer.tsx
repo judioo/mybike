@@ -1,11 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import { ProductImage } from '@/types/product';
-
-// Dynamically import Next.js Image component to avoid SSR issues
-const NextImage = dynamic(() => import('next/image'), { ssr: false });
 
 // Fallback image component for SSR
 const FallbackImage = ({ src, alt, className, width, height, ...props }: any) => (
@@ -30,16 +27,19 @@ interface ProductImageOptimizerProps {
   quality?: number;
   width?: number;
   height?: number;
+  fetchPriority?: 'high' | 'low' | 'auto';
+  loading?: 'eager' | 'lazy';
 }
 
 /**
  * ProductImageOptimizer - Optimizes product images with responsive sizing and formats
  * 
  * Features:
- * - Automatic WebP/AVIF format conversion
- * - Responsive sizing based on viewport
- * - Lazy loading with priority option for LCP images
- * - Placeholder blur for better UX during loading
+ * - Automatic WebP/AVIF format conversion with quality optimization
+ * - Responsive sizing based on viewport with proper sizes attribute
+ * - Optimized loading with fetchPriority and loading strategies
+ * - Enhanced placeholder blur for better UX during loading
+ * - Proper caching with Next.js image optimization
  */
 export default function ProductImageOptimizer({
   image,
@@ -52,8 +52,11 @@ export default function ProductImageOptimizer({
   quality = 85,
   width = 800,
   height = 800,
+  fetchPriority = 'auto',
+  loading,
 }: ProductImageOptimizerProps) {
   const [isClient, setIsClient] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   // Use effect to check if we're on the client side
   useEffect(() => {
@@ -61,24 +64,53 @@ export default function ProductImageOptimizer({
   }, []);
 
   // Extract image properties - support both direct props and image object
-  const imageSrc = src || (image?.src) || '/api/placeholder/800/800';
+  const imageSrc = imgError ? '/api/placeholder/800/800' : (src || (image?.src) || '/api/placeholder/800/800');
   const imageAlt = alt || (image?.alt) || 'Product image';
   // Use provided dimensions or defaults
   const imageWidth = width || 800;
   const imageHeight = height || 800;
 
-  // Generate placeholder
+  // Generate optimized placeholder
   const placeholder = 'blur';
   
-  // Generate blurDataURL if not provided
-  const blurDataURL = `data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${width} ${height}'%3E%3Cfilter id='b' color-interpolation-filters='sRGB'%3E%3CfeGaussianBlur stdDeviation='20'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='%23f3f4f6'/%3E%3C/svg%3E`;
+  // Generate blurDataURL with improved SVG for better performance
+  const blurDataURL = `data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${width} ${height}'%3E%3Cfilter id='b' color-interpolation-filters='sRGB'%3E%3CfeGaussianBlur stdDeviation='15'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' fill='%23f3f4f6'/%3E%3C/svg%3E`;
 
-  // Use the appropriate image component based on client/server rendering
-  const ImageComponent = isClient ? NextImage : FallbackImage;
+  // Determine loading strategy based on props
+  const loadingStrategy = loading || (priority ? 'eager' : 'lazy');
+  
+  // Determine fetchPriority based on priority prop if not explicitly set
+  const imgFetchPriority = priority ? 'high' : fetchPriority;
+
+  // Handle image loading error
+  const handleError = () => setImgError(true);
+
+  // For server-side rendering or if there's an error, use the fallback
+  if (!isClient || imgError) {
+    return fill ? (
+      <div className={`relative ${className}`}>
+        <FallbackImage
+          src={'/api/placeholder/800/800'}
+          alt={imageAlt}
+          className="object-cover w-full h-full"
+          width={imageWidth}
+          height={imageHeight}
+        />
+      </div>
+    ) : (
+      <FallbackImage
+        src={'/api/placeholder/800/800'}
+        alt={imageAlt}
+        className={className}
+        width={imageWidth}
+        height={imageHeight}
+      />
+    );
+  }
 
   return fill ? (
     <div className={`relative ${className}`}>
-      <ImageComponent
+      <Image
         src={imageSrc}
         alt={imageAlt}
         fill
@@ -88,10 +120,13 @@ export default function ProductImageOptimizer({
         placeholder={placeholder}
         blurDataURL={blurDataURL}
         className="object-cover"
+        loading={loadingStrategy}
+        fetchPriority={imgFetchPriority}
+        onError={handleError}
       />
     </div>
   ) : (
-    <ImageComponent
+    <Image
       src={imageSrc}
       alt={imageAlt}
       width={imageWidth}
@@ -102,6 +137,9 @@ export default function ProductImageOptimizer({
       placeholder={placeholder}
       blurDataURL={blurDataURL}
       className={className}
+      loading={loadingStrategy}
+      fetchPriority={imgFetchPriority}
+      onError={handleError}
     />
   );
 }

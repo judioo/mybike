@@ -1,0 +1,297 @@
+{
+  "id": "mock-mountain-bike-1",
+  "handle": "mountain-explorer-pro",
+  "title": "Mountain Explorer Pro",
+  "description": "The Mountain Explorer Pro is our flagship mountain bike, designed for serious trail riders who demand the best in performance and durability. With advanced suspension, premium components, and a lightweight frame, this bike can handle any terrain with ease.",
+  "vendor": "MyBike",
+  "type": "Mountain Bike",
+  "price": "1999.00",
+  "compareAtPrice": null,
+  "available": true,
+  "tags": ["mountain", "premium", "trail", "enduro"],
+  "images": [
+    {
+      "id": "img1",
+      "src": "https://images.unsplash.com/photo-1511994298241-608e28f14fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      "alt": "Mountain Explorer Pro - Red"
+    },
+    {
+      "id": "img2",
+      "src": "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      "alt": "Mountain Explorer Pro - Blue"
+    },
+    {
+      "id": "img3",
+      "src": "https://images.unsplash.com/photo-1485965120184-e220f721d03e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80",
+      "alt": "Mountain Explorer Pro - Black"
+    }
+  ],
+  "options": [
+    {
+      "id": "opt1",
+      "name": "Color",
+      "position": 1,
+      "values": ["Red", "Blue", "Black"]
+    },
+    {
+      "id": "opt2",
+      "name": "Size",
+      "position": 2,
+      "values": ["Small", "Medium", "Large"]
+    },
+    {
+      "id": "opt3",
+      "name": "Frame Material",
+      "position": 3,
+      "values": ["Carbon", "Aluminum"]
+    }
+  ],
+  "variants": [
+    {
+      "id": "var1",
+      "title": "Mountain Explorer Pro - Red / Small / Carbon",
+      "price": "2199.00",
+      "compareAtPrice": "2499.00",
+      "sku": "MBK-MEP-R-S-C",
+      "available": true,
+      "optionValues": ["Red", "Small", "Carbon"],
+      "inventory": {
+        "quantity": 5,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var2",
+      "title": "Mountain Explorer Pro - Red / Medium / Carbon",
+      "price": "2199.00",
+      "compareAtPrice": "2499.00",
+      "sku": "MBK-MEP-R-M-C",
+      "available": true,
+      "optionValues": ["Red", "Medium", "Carbon"],
+      "inventory": {
+        "quantity": 3,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var3",
+      "title": "Mountain Explorer Pro - Red / Large / Carbon",
+      "price": "2199.00",
+      "compareAtPrice": "2499.00",
+      "sku": "MBK-MEP-R-L-C",
+      "available": true,
+      "optionValues": ["Red", "Large", "Carbon"],
+      "inventory": {
+        "quantity": 0,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var4",
+      "title": "Mountain Explorer Pro - Red / Small / Aluminum",
+      "price": "1899.00",
+      "compareAtPrice": "2199.00",
+      "sku": "MBK-MEP-R-S-A",
+      "available": true,
+      "optionValues": ["Red", "Small", "Aluminum"],
+      "inventory": {
+        "quantity": 8,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var5",
+      "title": "Mountain Explorer Pro - Red / Medium / Aluminum",
+      "price": "1899.00",
+      "compareAtPrice": "2199.00",
+      "sku": "MBK-MEP-R-M-A",
+      "available": true,
+      "optionValues": ["Red", "Medium", "Aluminum"],
+      "inventory": {
+        "quantity": 6,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var6",
+      "title": "Mountain Explorer Pro - Red / Large / Aluminum",
+      "price": "1899.00",
+      "compareAtPrice": "2199.00",
+      "sku": "MBK-MEP-R-L-A",
+      "available": false,
+      "optionValues": ["Red", "Large", "Aluminum"],
+      "inventory": {
+        "quantity": 0,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var7",
+      "title": "Mountain Explorer Pro - Blue / Small / Carbon",
+      "price": "2199.00",
+      "compareAtPrice": "2499.00",
+      "sku": "MBK-MEP-B-S-C",
+      "available": true,
+      "optionValues": ["Blue", "Small", "Carbon"],
+      "inventory": {
+        "quantity": 2,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var8",
+      "title": "Mountain Explorer Pro - Blue / Medium / Carbon",
+      "price": "2199.00",
+      "compareAtPrice": "2499.00",
+      "sku": "MBK-MEP-B-M-C",
+      "available": true,
+      "optionValues": ["Blue", "Medium", "Carbon"],
+      "inventory": {
+        "quantity": 4,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var9",
+      "title": "Mountain Explorer Pro - Blue / Large / Carbon",
+      "price": "2199.00",
+      "compareAtPrice": "2499.00",
+      "sku": "MBK-MEP-B-L-C",
+      "available": true,
+      "optionValues": ["Blue", "Large", "Carbon"],
+      "inventory": {
+        "quantity": 1,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var10",
+      "title": "Mountain Explorer Pro - Blue / Small / Aluminum",
+      "price": "1899.00",
+      "compareAtPrice": "2199.00",
+      "sku": "MBK-MEP-B-S-A",
+      "available": true,
+      "optionValues": ["Blue", "Small", "Aluminum"],
+      "inventory": {
+        "quantity": 7,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var11",
+      "title": "Mountain Explorer Pro - Blue / Medium / Aluminum",
+      "price": "1899.00",
+      "compareAtPrice": "2199.00",
+      "sku": "MBK-MEP-B-M-A",
+      "available": true,
+      "optionValues": ["Blue", "Medium", "Aluminum"],
+      "inventory": {
+        "quantity": 5,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var12",
+      "title": "Mountain Explorer Pro - Blue / Large / Aluminum",
+      "price": "1899.00",
+      "compareAtPrice": "2199.00",
+      "sku": "MBK-MEP-B-L-A",
+      "available": false,
+      "optionValues": ["Blue", "Large", "Aluminum"],
+      "inventory": {
+        "quantity": 0,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var13",
+      "title": "Mountain Explorer Pro - Black / Small / Carbon",
+      "price": "2199.00",
+      "compareAtPrice": "2499.00",
+      "sku": "MBK-MEP-BK-S-C",
+      "available": true,
+      "optionValues": ["Black", "Small", "Carbon"],
+      "inventory": {
+        "quantity": 3,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var14",
+      "title": "Mountain Explorer Pro - Black / Medium / Carbon",
+      "price": "2199.00",
+      "compareAtPrice": "2499.00",
+      "sku": "MBK-MEP-BK-M-C",
+      "available": true,
+      "optionValues": ["Black", "Medium", "Carbon"],
+      "inventory": {
+        "quantity": 2,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var15",
+      "title": "Mountain Explorer Pro - Black / Large / Carbon",
+      "price": "2199.00",
+      "compareAtPrice": "2499.00",
+      "sku": "MBK-MEP-BK-L-C",
+      "available": false,
+      "optionValues": ["Black", "Large", "Carbon"],
+      "inventory": {
+        "quantity": 0,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var16",
+      "title": "Mountain Explorer Pro - Black / Small / Aluminum",
+      "price": "1899.00",
+      "compareAtPrice": "2199.00",
+      "sku": "MBK-MEP-BK-S-A",
+      "available": true,
+      "optionValues": ["Black", "Small", "Aluminum"],
+      "inventory": {
+        "quantity": 6,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var17",
+      "title": "Mountain Explorer Pro - Black / Medium / Aluminum",
+      "price": "1899.00",
+      "compareAtPrice": "2199.00",
+      "sku": "MBK-MEP-BK-M-A",
+      "available": true,
+      "optionValues": ["Black", "Medium", "Aluminum"],
+      "inventory": {
+        "quantity": 4,
+        "policy": "deny"
+      }
+    },
+    {
+      "id": "var18",
+      "title": "Mountain Explorer Pro - Black / Large / Aluminum",
+      "price": "1899.00",
+      "compareAtPrice": "2199.00",
+      "sku": "MBK-MEP-BK-L-A",
+      "available": true,
+      "optionValues": ["Black", "Large", "Aluminum"],
+      "inventory": {
+        "quantity": 2,
+        "policy": "deny"
+      }
+    }
+  ],
+  "collections": [
+    {
+      "id": "col1",
+      "handle": "mountain-bikes",
+      "title": "Mountain Bikes"
+    },
+    {
+      "id": "col2",
+      "handle": "premium-bikes",
+      "title": "Premium Bikes"
+    }
+  ]
+}

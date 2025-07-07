@@ -26,6 +26,7 @@ const ServiceProductTemplate = dynamic(() => import('./templates/ServiceProductT
 interface ProductTemplateManagerProps {
   product: Product;
   relatedProducts: Product[];
+  getRelatedProducts?: () => Promise<Product[]>;
 }
 
 // Helper function to detect rich media in product data

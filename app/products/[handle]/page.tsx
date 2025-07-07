@@ -1,13 +1,10 @@
 import { Metadata } from 'next';
+import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { DataService } from '@/lib/data-service';
-import ProductImageGallery from '@/components/product/ProductImageGallery';
-import VariantSelector from '@/components/product/VariantSelector';
-import AddToCartButton from '@/components/product/AddToCartButton';
-import ProductSpecs from '@/components/product/ProductSpecs';
-import RecentlyViewedProducts from '@/components/product/RecentlyViewedProducts';
-import RelatedProducts from '@/components/product/RelatedProducts';
+import ProductStream from '@/components/product/ProductStream';
+import ProductSkeleton from '@/components/product/ProductSkeleton';
 import RecentlyViewedTracker from '@/components/product/RecentlyViewedTracker';
 import {
   generateProductSchema,
@@ -19,19 +16,14 @@ interface ProductPageProps {
   params: Promise<{ handle: string }>;
 }
 
-// Force dynamic rendering for this page
-export const dynamic = 'force-dynamic';
+// Enable streaming for this page
+export const runtime = 'edge';
 export const dynamicParams = true;
 
-// Comment out static params generation to force dynamic rendering
-// export async function generateStaticParams() {
-//   const { products } = await DataService.getProducts();
-//   return products.map((product) => ({
-//     handle: product.handle,
-//   }));
-// }
+// Enable incremental static regeneration with on-demand revalidation
+export const revalidate = 3600; // Cache for 1 hour by default, but allow on-demand revalidation
 
-// Generate metadata
+// Generate metadata with caching
 export async function generateMetadata({
   params,
 }: ProductPageProps): Promise<Metadata> {
@@ -46,26 +38,41 @@ export async function generateMetadata({
       };
     }
 
+    // Generate structured metadata for better SEO
+    const metaDescription = product.description
+      ? `${product.description.replace(/<[^>]*>?/gm, '').substring(0, 155)}...`
+      : `Shop ${product.title} at MyBike - Premium cycling equipment and accessories`;
+
     return {
       title: `${product.title} | MyBike`,
-      description: product.description || `Shop ${product.title} at MyBike`,
+      description: metaDescription,
       openGraph: {
         title: product.title,
-        description: product.description || `Shop ${product.title} at MyBike`,
+        description: metaDescription,
         images: product.images?.[0]?.src
-          ? [
-              {
-                url: product.images[0].src,
-                alt: product.images[0].alt || product.title,
-              },
-            ]
+          ? [{ 
+              url: product.images[0].src,
+              width: 1200,
+              height: 630,
+              alt: product.images[0].alt || `${product.title} - MyBike`
+            }]
           : [],
+        // Using a valid OpenGraph type
+        type: 'website',
+        siteName: 'MyBike',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: product.title,
+        description: metaDescription,
+        images: product.images?.[0]?.src ? [product.images[0].src] : [],
       },
     };
   } catch (error) {
+    console.error('Error generating metadata:', error);
     return {
       title: 'Product | MyBike',
-      description: 'Shop our bicycle products',
+      description: 'Shop premium bikes and accessories at MyBike.',
     };
   }
 }
@@ -75,29 +82,38 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const { handle } = await params;
 
   try {
-    // Get product using DataService
+    // Get initial product data using DataService with caching
     const product = await DataService.getProductByHandle(handle);
 
     if (!product) {
       notFound();
     }
 
-    // Get related products from the same collections
-    const relatedProductsPromises =
-      product.collections?.map(async (collectionId) => {
-        const { products } = await DataService.getProductsByCollection(
-          collectionId.toString(),
-          { page: 1, pageSize: 8 }
-        );
-        return products.filter((p) => p.id !== product.id);
-      }) || [];
-
-    const relatedProductsArrays = await Promise.all(relatedProductsPromises);
-    const relatedProducts = relatedProductsArrays.flat().slice(0, 4);
-
     // Generate schema markup for SEO
     const productSchema = generateProductSchema(product);
     const breadcrumbSchema = generateBreadcrumbSchema(product);
+
+    // Pre-fetch related products in parallel
+    let relatedProducts: any[] = [];
+    try {
+      if (product.collections && product.collections.length > 0) {
+        const relatedProductsPromises = product.collections.map(async (collectionId: string | number) => {
+          // Convert string IDs to numbers as DataService.getProductsByCollection expects a number
+          const numericId = typeof collectionId === 'string' ? parseInt(collectionId, 10) : collectionId;
+          const { products } = await DataService.getProductsByCollection(
+            numericId,
+            { pagination: { page: 1, pageSize: 8 } }
+          );
+          return products.filter((p: any) => p.id !== product.id);
+        });
+
+        const relatedProductsArrays = await Promise.all(relatedProductsPromises);
+        relatedProducts = relatedProductsArrays.flat().slice(0, 4);
+      }
+    } catch (error) {
+      console.error('Error fetching related products:', error);
+      // Continue with empty related products
+    }
 
     return (
       <>
@@ -139,154 +155,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
               </ol>
             </nav>
 
-            {/* Product Details */}
-            <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12'>
-              {/* Product Images */}
-              <div>
-                <ProductImageGallery
-                  images={product.images}
-                  productTitle={product.title}
-                />
-              </div>
-
-              {/* Product Info */}
-              <div className='space-y-6'>
-                <div>
-                  <h1 className='text-3xl font-bold tracking-tight text-gray-900'>
-                    {product.title}
-                  </h1>
-
-                  {/* Price and Availability */}
-                  <div className='mt-4 flex items-center justify-between'>
-                    <div className='flex items-baseline'>
-                      <p className='text-3xl tracking-tight text-gray-900'>
-                        ${product.price}
-                      </p>
-                      {product.compareAtPrice &&
-                        product.compareAtPrice > product.price && (
-                          <span className='ml-3 text-lg text-gray-500 line-through'>
-                            ${product.compareAtPrice}
-                          </span>
-                        )}
-                      {product.compareAtPrice &&
-                        product.compareAtPrice > product.price && (
-                          <span className='ml-3 text-sm font-medium text-green-600'>
-                            Save $
-                            {(product.compareAtPrice - product.price).toFixed(
-                              2
-                            )}
-                          </span>
-                        )}
-                    </div>
-
-                    {/* Inventory Status */}
-                    <div className='flex items-center'>
-                      {product.available !== false ? (
-                        <span className='flex items-center text-sm font-medium text-green-600'>
-                          <svg
-                            className='w-4 h-4 mr-1'
-                            fill='currentColor'
-                            viewBox='0 0 20 20'
-                          >
-                            <path
-                              fillRule='evenodd'
-                              d='M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z'
-                              clipRule='evenodd'
-                            />
-                          </svg>
-                          In Stock
-                        </span>
-                      ) : (
-                        <span className='flex items-center text-sm font-medium text-red-600'>
-                          <svg
-                            className='w-4 h-4 mr-1'
-                            fill='currentColor'
-                            viewBox='0 0 20 20'
-                          >
-                            <path
-                              fillRule='evenodd'
-                              d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
-                              clipRule='evenodd'
-                            />
-                          </svg>
-                          Out of Stock
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Product Description */}
-                {product.description && (
-                  <div className='prose prose-sm text-gray-600 max-w-none'>
-                    <div
-                      dangerouslySetInnerHTML={{ __html: product.description }}
-                    />
-                  </div>
-                )}
-
-                {/* Product Features/Tags */}
-                {product.tags && product.tags.length > 0 && (
-                  <div>
-                    <h3 className='text-sm font-medium text-gray-900 mb-2'>
-                      Features
-                    </h3>
-                    <div className='flex flex-wrap gap-2'>
-                      {product.tags.map((tag, index) => (
-                        <span
-                          key={index}
-                          className='inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800'
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Variant Selector */}
-                {product.variants && product.variants.length > 1 && (
-                  <VariantSelector
-                    variants={product.variants}
-                    selectedVariant={product.variants[0]}
-                  />
-                )}
-
-                {/* Add to Cart */}
-                <AddToCartButton
-                  product={product}
-                  variant={product.variants?.[0]}
-                />
-
-                {/* Product Specifications */}
-                <ProductSpecs
-                  metafields={product.metafields}
-                  product={{
-                    vendor: product.vendor,
-                    productType: product.productType,
-                    weight: product.weight,
-                    tags: product.tags,
-                    handle: product.handle,
-                    createdAt: product.createdAt,
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Recently Viewed Products */}
-            <div className='mt-16'>
-              <RecentlyViewedProducts
-                currentProductId={product.id}
-                maxItems={6}
+            {/* Product Stream with Suspense - This component handles all product rendering with streaming */}
+            <Suspense fallback={<ProductSkeleton />}>
+              <ProductStream 
+                productId={product.id} 
+                initialProduct={product} 
+                initialRelatedProducts={relatedProducts}
               />
-            </div>
-
-            {/* Related Products */}
-            {relatedProducts.length > 0 && (
-              <div className='mt-16'>
-                <RelatedProducts products={relatedProducts} />
-              </div>
-            )}
+            </Suspense>
           </div>
         </div>
       </>

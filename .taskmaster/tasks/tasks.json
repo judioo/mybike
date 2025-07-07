@@ -321,7 +321,7 @@
               9
             ],
             "details": "Implement Next.js image optimization, streaming, and component-level caching. Use React Suspense where appropriate and ensure smooth UX.",
-            "status": "pending"
+            "status": "done"
           },
           {
             "id": 11,
@@ -331,7 +331,7 @@
               3
             ],
             "details": "Create consistent navigation between product grid and detail pages. Implement related products section using existing ProductGrid components.",
-            "status": "in-progress"
+            "status": "done"
           }
         ]
       },
@@ -520,7 +520,7 @@
     ],
     "metadata": {
       "created": "2025-06-16T19:55:14.944Z",
-      "updated": "2025-07-06T17:24:08.354Z",
+      "updated": "2025-07-06T17:50:06.890Z",
       "description": "Tasks for master context"
     }
   }
