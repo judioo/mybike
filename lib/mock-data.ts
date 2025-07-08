@@ -2,12 +2,31 @@ import { Product, Collection, ProductImage } from '@/types/product';
 
 // Mock product images
 const MOCK_IMAGES: ProductImage[] = [
-  { src: '/images/bikes/road-bike-1.jpg', alt: 'Road bike front view' },
-  { src: '/images/bikes/road-bike-2.jpg', alt: 'Road bike side view' },
-  { src: '/images/bikes/mountain-bike-1.jpg', alt: 'Mountain bike on trail' },
-  { src: '/images/bikes/mountain-bike-2.jpg', alt: 'Mountain bike detail' },
-  { src: '/images/bikes/hybrid-bike-1.jpg', alt: 'Hybrid bike in city' },
-  { src: '/images/bikes/electric-bike-1.jpg', alt: 'Electric bike charging' },
+  { src: 'https://example.com/images/bikes/road-bike-1.jpg', alt: 'Road bike front view' },
+  { src: 'https://example.com/images/bikes/road-bike-2.jpg', alt: 'Road bike side view' },
+  { src: 'https://example.com/images/bikes/mountain-bike-1.jpg', alt: 'Mountain bike on trail' },
+  { src: 'https://example.com/images/bikes/mountain-bike-2.jpg', alt: 'Mountain bike detail' },
+  { src: 'https://example.com/images/bikes/hybrid-bike-1.jpg', alt: 'Hybrid bike in city' },
+  { src: 'https://example.com/images/bikes/electric-bike-1.jpg', alt: 'Electric bike charging' },
+];
+
+// Mountain Trail Explorer specific images (from the original mock product JSON)
+const MOUNTAIN_EXPLORER_IMAGES: ProductImage[] = [
+  { 
+    id: "img1",
+    src: "https://images.unsplash.com/photo-1511994298241-608e28f14fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80", 
+    alt: "Mountain Explorer Pro - Red" 
+  },
+  { 
+    id: "img2",
+    src: "https://images.unsplash.com/photo-1532298229144-0ec0c57515c7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80", 
+    alt: "Mountain Explorer Pro - Blue" 
+  },
+  { 
+    id: "img3",
+    src: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1000&q=80", 
+    alt: "Mountain Explorer Pro - Black" 
+  }
 ];
 
 // Mock collections
@@ -127,57 +146,161 @@ export const MOCK_PRODUCTS: Product[] = [
   },
   {
     id: 2,
-    title: 'Mountain Trail Explorer',
+    title: 'Mountain Explorer Pro',
     handle: 'mountain-trail-explorer',
     description:
-      'Rugged mountain bike built for challenging trails and off-road adventures. Full suspension and durable aluminum frame.',
-    images: [MOCK_IMAGES[2], MOCK_IMAGES[3]],
+      'The Mountain Explorer Pro is our flagship mountain bike, designed for serious trail riders who demand the best in performance and durability. With advanced suspension, premium components, and a lightweight frame, this bike can handle any terrain with ease.',
+    images: MOUNTAIN_EXPLORER_IMAGES,
     variants: [
       {
-        id: 201,
-        title: 'Black / Small',
-        sku: 'MTE-BLACK-S',
-        price: '8500.00',
+        id: "var1",
+        title: "Mountain Explorer Pro - Red / Small / Carbon",
+        price: "2199.00",
+        compareAtPrice: "2499.00",
+        sku: "MBK-MEP-R-S-C",
         available: true,
-        optionValues: ['Black', 'Small'],
+        optionValues: ["Red", "Small", "Carbon"],
+        inventory: {
+          quantity: 5,
+          policy: "deny"
+        }
       },
       {
-        id: 202,
-        title: 'Black / Medium',
-        sku: 'MTE-BLACK-M',
-        price: '8500.00',
+        id: "var2",
+        title: "Mountain Explorer Pro - Red / Medium / Carbon",
+        price: "2199.00",
+        compareAtPrice: "2499.00",
+        sku: "MBK-MEP-R-M-C",
         available: true,
-        optionValues: ['Black', 'Medium'],
+        optionValues: ["Red", "Medium", "Carbon"],
+        inventory: {
+          quantity: 3,
+          policy: "deny"
+        }
       },
       {
-        id: 203,
-        title: 'Green / Medium',
-        sku: 'MTE-GREEN-M',
-        price: '8500.00',
+        id: "var3",
+        title: "Mountain Explorer Pro - Red / Large / Carbon",
+        price: "2199.00",
+        compareAtPrice: "2499.00",
+        sku: "MBK-MEP-R-L-C",
         available: true,
-        optionValues: ['Green', 'Medium'],
+        optionValues: ["Red", "Large", "Carbon"],
+        inventory: {
+          quantity: 0,
+          policy: "deny"
+        }
       },
+      {
+        id: "var4",
+        title: "Mountain Explorer Pro - Red / Small / Aluminum",
+        price: "1899.00",
+        compareAtPrice: "2199.00",
+        sku: "MBK-MEP-R-S-A",
+        available: true,
+        optionValues: ["Red", "Small", "Aluminum"],
+        inventory: {
+          quantity: 8,
+          policy: "deny"
+        }
+      },
+      {
+        id: "var5",
+        title: "Mountain Explorer Pro - Red / Medium / Aluminum",
+        price: "1899.00",
+        compareAtPrice: "2199.00",
+        sku: "MBK-MEP-R-M-A",
+        available: true,
+        optionValues: ["Red", "Medium", "Aluminum"],
+        inventory: {
+          quantity: 6,
+          policy: "deny"
+        }
+      },
+      {
+        id: "var6",
+        title: "Mountain Explorer Pro - Red / Large / Aluminum",
+        price: "1899.00",
+        compareAtPrice: "2199.00",
+        sku: "MBK-MEP-R-L-A",
+        available: true,
+        optionValues: ["Red", "Large", "Aluminum"],
+        inventory: {
+          quantity: 4,
+          policy: "deny"
+        }
+      },
+      {
+        id: "var7",
+        title: "Mountain Explorer Pro - Blue / Small / Carbon",
+        price: "2199.00",
+        compareAtPrice: "2499.00",
+        sku: "MBK-MEP-B-S-C",
+        available: true,
+        optionValues: ["Blue", "Small", "Carbon"],
+        inventory: {
+          quantity: 2,
+          policy: "deny"
+        }
+      },
+      {
+        id: "var8",
+        title: "Mountain Explorer Pro - Blue / Medium / Carbon",
+        price: "2199.00",
+        compareAtPrice: "2499.00",
+        sku: "MBK-MEP-B-M-C",
+        available: false,
+        optionValues: ["Blue", "Medium", "Carbon"],
+        inventory: {
+          quantity: 0,
+          policy: "deny"
+        }
+      },
+      {
+        id: "var13",
+        title: "Mountain Explorer Pro - Black / Small / Carbon",
+        price: "2199.00",
+        compareAtPrice: "2499.00",
+        sku: "MBK-MEP-BK-S-C",
+        available: true,
+        optionValues: ["Black", "Small", "Carbon"],
+        inventory: {
+          quantity: 3,
+          policy: "deny"
+        }
+      }
     ],
-    price: '8500.00',
+    price: "2199.00",
+    compareAtPrice: "2499.00",
     available: true,
     options: [
-      { name: 'Color', values: ['Black', 'Green'] },
-      { name: 'Size', values: ['Small', 'Medium', 'Large'] },
+      {
+        name: "Color",
+        values: ["Red", "Blue", "Black"]
+      },
+      {
+        name: "Size",
+        values: ["Small", "Medium", "Large"]
+      },
+      {
+        name: "Frame Material",
+        values: ["Carbon", "Aluminum"]
+      }
     ],
-    tags: ['aluminum', 'mountain', 'trail', 'suspension', 'off-road'],
+    tags: ["mountain", "premium", "trail", "enduro"],
     collections: [281610289214],
     metafields: {
-      material: 'Aluminum',
-      speed: '18',
-      weight: '12.5kg',
-      brand: 'TrailMaster',
+      material: "Carbon/Aluminum",
+      speed: "21",
+      weight: "11.2kg",
+      brand: "MyBike"
     },
-    vendor: 'TrailMaster',
-    productType: 'Mountain Bike',
-    createdAt: '2024-01-20T10:00:00Z',
+    vendor: "MyBike",
+    productType: "Mountain Bike",
+    createdAt: "2024-01-20T10:00:00Z",
     seo: {
-      title: 'Mountain Trail Explorer - Full Suspension MTB',
-      description: 'Durable mountain bike for serious trail riding',
+      title: "Mountain Explorer Pro - Premium Trail Bike",
+      description: "High-performance mountain bike for serious trail riders"
     },
   },
   {

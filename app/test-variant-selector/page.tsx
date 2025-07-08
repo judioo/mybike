@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { ProductVariant, Product, ProductOption } from '@/types/product';
+import { DataService } from '@/lib/data-service';
 
 // Dynamically import the VariantSelector with no SSR to avoid hydration issues
 const VariantSelector = dynamic(
@@ -46,21 +47,24 @@ export default function TestVariantSelectorPage() {
   const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load the mock data on the client side only
+  // Load the product data from the DataService on the client side only
   useEffect(() => {
-    const loadMockData = async () => {
+    const loadProductData = async () => {
       try {
-        const data = await import('@/mock-data/mock-product.json');
-        setMockProductData(data.default as unknown as MockProductData);
-        setSelectedVariant(data.default.variants[0] as ProductVariant);
+        // Get a mountain bike product from the DataService
+        // We're using the mountain-trail-explorer handle which should be in the mountain-bikes collection
+        const product = await DataService.getProduct('mountain-trail-explorer');
+        
+        setMockProductData(product as unknown as MockProductData);
+        setSelectedVariant(product.variants[0] as ProductVariant);
         setIsLoading(false);
       } catch (error) {
-        console.error('Error loading mock data:', error);
+        console.error('Error loading product data:', error);
         setIsLoading(false);
       }
     };
     
-    loadMockData();
+    loadProductData();
   }, []);
 
   const handleVariantChange = (variant: ProductVariant) => {
@@ -111,33 +115,69 @@ export default function TestVariantSelectorPage() {
         <div className="space-y-4">
           <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
             <img
-              src={mockProductData.images.find(img => 
-                img.alt && img.alt.includes(selectedVariant.optionValues[0]))?.src || 
-                mockProductData.images[0].src}
+              src={(() => {
+                // Find the image that matches the selected variant's color
+                if (mockProductData.images && mockProductData.images.length > 0) {
+                  // Get the color from the selected variant
+                  const selectedColor = selectedVariant.optionValues[0]; // Assuming first option is color
+                  
+                  // Find the image index based on color
+                  const colorIndex = {
+                    'Red': 0,
+                    'Blue': 1,
+                    'Black': 2
+                  }[selectedColor] || 0;
+                  
+                  // Return the corresponding image or default to first image
+                  return mockProductData.images[colorIndex]?.src || mockProductData.images[0].src;
+                }
+                return '/images/placeholder-product.svg';
+              })()}
               alt={selectedVariant.title}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                // Fallback for missing images
+                (e.target as HTMLImageElement).src = '/images/placeholder-product.svg';
+              }}
             />
           </div>
           <div className="flex space-x-2 overflow-x-auto">
-            {mockProductData.images.map((image) => (
+            {mockProductData.images && mockProductData.images.map((image, index) => (
               <button
-                key={image.id}
-                className="w-20 h-20 bg-gray-100 rounded-md overflow-hidden flex-shrink-0"
+                key={image.id || `image-${index}`}
+                className={`w-20 h-20 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 ${
+                  // Highlight the selected image
+                  mockProductData.images[index]?.src === (() => {
+                    const selectedColor = selectedVariant.optionValues[0];
+                    const colorIndex = { 'Red': 0, 'Blue': 1, 'Black': 2 }[selectedColor] || 0;
+                    return mockProductData.images[colorIndex]?.src;
+                  })() ? 'ring-2 ring-blue-500' : ''
+                }`}
                 onClick={() => {
-                  // Find variant matching this image color
-                  const color = image.alt ? image.alt.split('-').pop()?.trim() : null;
-                  const matchingVariant = mockProductData.variants.find(
-                    v => v.optionValues && v.optionValues[0] === color && v.available
-                  );
-                  if (matchingVariant) {
-                    setSelectedVariant(matchingVariant);
+                  // Find variants with the color that corresponds to this image
+                  const colors = ['Red', 'Blue', 'Black'];
+                  const color = colors[index];
+                  
+                  if (color) {
+                    // Find the first variant with this color
+                    const variant = mockProductData.variants.find(v => 
+                      v.optionValues[0] === color && v.available
+                    ) || mockProductData.variants.find(v => v.optionValues[0] === color);
+                    
+                    if (variant) {
+                      setSelectedVariant(variant);
+                    }
                   }
                 }}
               >
                 <img
                   src={image.src}
-                  alt={image.alt}
+                  alt={image.alt || `Product image ${index + 1}`}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Fallback for missing images
+                    (e.target as HTMLImageElement).src = '/images/placeholder-product.svg';
+                  }}
                 />
               </button>
             ))}
