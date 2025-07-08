@@ -288,7 +288,7 @@ export const MOCK_PRODUCTS: Product[] = [
       }
     ],
     tags: ["mountain", "premium", "trail", "enduro"],
-    collections: [281610289214],
+    collections: [281610289214, "col1"],
     metafields: {
       material: "Carbon/Aluminum",
       speed: "21",
@@ -584,11 +584,18 @@ export const MOCK_PRODUCTS: Product[] = [
 export function getProductsByCollection(
   collectionId: string | number
 ): Product[] {
-  return MOCK_PRODUCTS.filter((product) =>
-    product.collections.includes(
-      typeof collectionId === 'string' ? parseInt(collectionId) : collectionId
-    )
-  );
+  const numericId = typeof collectionId === 'string' ? parseInt(collectionId) : collectionId;
+  return MOCK_PRODUCTS.filter((product) => {
+    // Check if the product's collections array includes either the numeric ID or the string ID
+    return product.collections.some(id => {
+      if (typeof id === 'number') {
+        return id === numericId;
+      } else {
+        // Handle string collection IDs (like "col1")
+        return id === collectionId;
+      }
+    });
+  });
 }
 
 // Function to get a specific collection

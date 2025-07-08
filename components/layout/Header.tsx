@@ -6,12 +6,18 @@ import { useCartStore, useUIStore } from '@/lib/stores';
 import { useState, useEffect } from 'react';
 
 const Header = () => {
+  const [isClient, setIsClient] = useState(false);
   const cartItemCount = useCartStore((state) => state.getTotalItems());
   const isMobileMenuOpen = useUIStore((state) => state.isMobileMenuOpen);
   const toggleMobileMenu = useUIStore((state) => state.toggleMobileMenu);
   const closeMobileMenu = useUIStore((state) => state.closeMobileMenu);
   const openCart = useCartStore((state) => state.openCart);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+
+  // Prevent hydration mismatch by only showing cart count after client-side hydration
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleMenuHover = (menu: string) => {
     setActiveMenu(menu);
@@ -226,7 +232,7 @@ const Header = () => {
             <button
               onClick={openCart}
               className='relative p-2 text-gray-900 hover:text-secondary transition-colors'
-              aria-label={`Shopping cart (${cartItemCount} items)`}
+              aria-label={`Shopping cart (${isClient ? cartItemCount : 0} items)`}
             >
               <svg
                 className='w-5 h-5'
@@ -242,7 +248,7 @@ const Header = () => {
                 />
               </svg>
               {/* Cart item count badge */}
-              {cartItemCount > 0 && (
+              {isClient && cartItemCount > 0 && (
                 <span className='absolute -top-1 -right-1 bg-secondary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center'>
                   {cartItemCount > 99 ? '99+' : cartItemCount}
                 </span>

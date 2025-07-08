@@ -4,23 +4,28 @@ import { MediaItem } from '@/types/media';
 import dynamic from 'next/dynamic';
 
 // Default product template
-import DefaultProductTemplate from './templates/DefaultProductTemplate';
+import EnhancedProductTemplate from './templates/EnhancedProductTemplate';
 
 // Lazy-loaded specialized templates
 const BikeProductTemplate = dynamic(() => import('./templates/BikeProductTemplate'), {
-  loading: () => <DefaultProductTemplate.Skeleton />,
+  loading: () => <EnhancedProductTemplate.Skeleton />,
 });
 
 const AccessoryProductTemplate = dynamic(() => import('./templates/AccessoryProductTemplate'), {
-  loading: () => <DefaultProductTemplate.Skeleton />,
+  loading: () => <EnhancedProductTemplate.Skeleton />,
 });
 
 const PrelovedProductTemplate = dynamic(() => import('./templates/PrelovedProductTemplate'), {
-  loading: () => <DefaultProductTemplate.Skeleton />,
+  loading: () => <EnhancedProductTemplate.Skeleton />,
 });
 
 const ServiceProductTemplate = dynamic(() => import('./templates/ServiceProductTemplate'), {
-  loading: () => <DefaultProductTemplate.Skeleton />,
+  loading: () => <EnhancedProductTemplate.Skeleton />,
+});
+
+// Legacy template (no longer used as default)
+const DefaultProductTemplate = dynamic(() => import('./templates/DefaultProductTemplate'), {
+  loading: () => <EnhancedProductTemplate.Skeleton />,
 });
 
 interface ProductTemplateManagerProps {
@@ -126,7 +131,12 @@ export default function ProductTemplateManager({ product, relatedProducts }: Pro
       templateSuffix
     };
     
-    // Handle template selection based on suffix
+    // Use EnhancedProductTemplate for all products to ensure consistent variant selector experience
+    // This provides the improved variant selection and image switching functionality from test-variant-selector
+    return <EnhancedProductTemplate {...templateProps} />;
+    
+    // Legacy template selection logic (commented out)
+    /*
     switch (templateSuffix) {
       case 'bike':
       case 'bicycle':
@@ -193,14 +203,14 @@ export default function ProductTemplateManager({ product, relatedProducts }: Pro
             return <ServiceProductTemplate {...templateProps} />;
           }
           
-          // Default template as fallback
-          return <DefaultProductTemplate {...templateProps} />;
+          // Enhanced template as fallback
+          return <EnhancedProductTemplate {...templateProps} />;
         }
-    }
+    */
   };
 
   return (
-    <Suspense fallback={<DefaultProductTemplate.Skeleton />}>
+    <Suspense fallback={<EnhancedProductTemplate.Skeleton />}>
       {renderTemplate()}
     </Suspense>
   );

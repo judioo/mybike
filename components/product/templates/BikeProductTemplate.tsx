@@ -1,6 +1,5 @@
-import React from 'react';
-import { Product } from '@/types/product';
-import ProductImageGallery from '@/components/product/ProductImageGallery';
+import React, { useState } from 'react';
+import { Product, ProductVariant } from '@/types/product';
 import VariantSelector from '@/components/product/VariantSelector';
 import AddToCartButton from '@/components/product/AddToCartButton';
 import ProductSpecs from '@/components/product/ProductSpecs';
@@ -8,6 +7,7 @@ import RecentlyViewedProducts from '@/components/product/RecentlyViewedProducts'
 import RelatedProducts from '@/components/product/RelatedProducts';
 import RichMediaRenderer from '@/components/product/RichMediaRenderer';
 import Link from 'next/link';
+import { formatPrice } from '@/lib/product-utils';
 
 interface BikeProductTemplateProps {
   product: Product;
@@ -15,6 +15,9 @@ interface BikeProductTemplateProps {
 }
 
 export default function BikeProductTemplate({ product, relatedProducts }: BikeProductTemplateProps) {
+  // State for selected variant
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant>(product.variants[0]);
+
   // Detect if product has rich media (videos, 3D models)
   const hasRichMedia = product.metafields?.richMedia || 
     (product.metafields?.mediaType && product.metafields.mediaType !== 'image');
@@ -24,6 +27,11 @@ export default function BikeProductTemplate({ product, relatedProducts }: BikePr
   
   // Extract bike-specific specifications
   const bikeSpecs = extractBikeSpecs(product);
+
+  // Handle variant change
+  const handleVariantChange = (variant: ProductVariant) => {
+    setSelectedVariant(variant);
+  };
 
   return (
     <div className="min-h-screen py-8">
@@ -83,11 +91,18 @@ export default function BikeProductTemplate({ product, relatedProducts }: BikePr
               <div className="mb-4">
                 <RichMediaRenderer media={richMedia} className="w-full aspect-video" />
               </div>
-            ) : null}
-            <ProductImageGallery
-              images={product.images}
-              productTitle={product.title}
-            />
+            ) : (
+              <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                <img
+                  src={product.images?.[0]?.src || '/images/placeholder-product.svg'}
+                  alt={product.title}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/images/placeholder-product.svg';
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           {/* Product Info */}
@@ -105,21 +120,18 @@ export default function BikeProductTemplate({ product, relatedProducts }: BikePr
               <div className="mt-4 flex items-center justify-between">
                 <div className="flex items-baseline">
                   <p className="text-3xl tracking-tight text-gray-900">
-                    ${product.price}
+                    {formatPrice(selectedVariant.price || product.price)}
                   </p>
                   {product.compareAtPrice &&
-                    product.compareAtPrice > product.price && (
+                    parseFloat(product.compareAtPrice) > parseFloat(product.price) && (
                       <span className="ml-3 text-lg text-gray-500 line-through">
-                        ${product.compareAtPrice}
+                        {formatPrice(product.compareAtPrice)}
                       </span>
                     )}
                   {product.compareAtPrice &&
-                    product.compareAtPrice > product.price && (
+                    parseFloat(product.compareAtPrice) > parseFloat(product.price) && (
                       <span className="ml-3 text-sm font-medium text-green-600">
-                        Save $
-                        {(product.compareAtPrice - product.price).toFixed(
-                          2
-                        )}
+                        Save {formatPrice((parseFloat(product.compareAtPrice) - parseFloat(product.price)).toString())}
                       </span>
                     )}
                 </div>
@@ -202,14 +214,16 @@ export default function BikeProductTemplate({ product, relatedProducts }: BikePr
             )}
 
             {/* Variant Selector - For bike sizes */}
-            {product.variants && product.variants.length > 1 && (
+            {product.variants && product.variants.length > 1 && product.options && (
               <div>
                 <h3 className="text-sm font-medium text-gray-900 mb-2">
                   Select Size
                 </h3>
                 <VariantSelector
                   variants={product.variants}
-                  selectedVariant={product.variants[0]}
+                  options={product.options}
+                  selectedVariant={selectedVariant}
+                  onVariantChange={handleVariantChange}
                 />
               </div>
             )}
@@ -217,7 +231,7 @@ export default function BikeProductTemplate({ product, relatedProducts }: BikePr
             {/* Add to Cart */}
             <AddToCartButton
               product={product}
-              variant={product.variants?.[0]}
+              variant={selectedVariant}
             />
 
             {/* Bike-specific features */}
@@ -257,15 +271,7 @@ export default function BikeProductTemplate({ product, relatedProducts }: BikePr
         <div className="mt-12 border-t border-gray-200 pt-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Technical Specifications</h2>
           <ProductSpecs
-            metafields={product.metafields}
-            product={{
-              vendor: product.vendor,
-              productType: product.productType,
-              weight: product.weight,
-              tags: product.tags,
-              handle: product.handle,
-              createdAt: product.createdAt,
-            }}
+            product={product}
           />
         </div>
 
