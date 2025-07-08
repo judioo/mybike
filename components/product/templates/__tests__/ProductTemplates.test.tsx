@@ -1,17 +1,19 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { vi } from 'vitest';
+import { vi, describe, test, expect } from 'vitest';
 import DefaultProductTemplate from '../DefaultProductTemplate';
 import BikeProductTemplate from '../BikeProductTemplate';
 import PrelovedProductTemplate from '../PrelovedProductTemplate';
 import AccessoryProductTemplate from '../AccessoryProductTemplate';
 import ServiceProductTemplate from '../ServiceProductTemplate';
+import EnhancedProductTemplate from '../EnhancedProductTemplate';
 import ProductTemplateManager from '../../ProductTemplateManager';
+import type { Product, ProductVariant } from '@/types/product';
 
 // Mock next/dynamic
 vi.mock('next/dynamic', () => ({
   __esModule: true,
-  default: (importFunc) => {
+  default: (importFunc: () => any) => {
     return importFunc();
   },
 }));
@@ -22,6 +24,16 @@ vi.mock('@/components/product/ProductImageGallery', () => ({
   default: () => <div data-testid="mock-image-gallery">Image Gallery</div>,
 }));
 
+vi.mock('../EnhancedProductTemplate', () => ({
+  __esModule: true,
+  default: ({ product }: { product: Product }) => (
+    <div data-testid="mock-enhanced-template">
+      <h1>{product.title}</h1>
+      <p>{product.vendor}</p>
+    </div>
+  ),
+}));
+
 vi.mock('@/components/product/VariantSelector', () => ({
   __esModule: true,
   default: () => <div data-testid="mock-variant-selector">Variant Selector</div>,
@@ -29,8 +41,8 @@ vi.mock('@/components/product/VariantSelector', () => ({
 
 vi.mock('@/components/product/AddToCartButton', () => ({
   __esModule: true,
-  default: ({ buttonText }) => (
-    <div data-testid="mock-add-to-cart">{buttonText || 'Add to Cart'}</div>
+  default: ({ buttonText }: { buttonText?: string }) => (
+    <button data-testid="mock-add-to-cart">{buttonText || 'Add to Cart'}</button>
   ),
 }));
 
@@ -55,38 +67,91 @@ vi.mock('@/components/product/RichMediaRenderer', () => ({
 }));
 
 // Mock product data
-const mockProduct = {
+const mockProduct: Product = {
   id: '1',
   handle: 'test-product',
   title: 'Test Product',
-  description: '<p>Test description</p>',
-  price: 99.99,
-  compareAtPrice: 129.99,
+  description: 'This is a test product',
+  price: '99.99',
+  compareAtPrice: '129.99',
   available: true,
-  images: [{ src: '/test-image.jpg', alt: 'Test Image' }],
+  images: [
+    { src: '/images/test-image-1.jpg', alt: 'Test Image 1' },
+    { src: '/images/test-image-2.jpg', alt: 'Test Image 2' },
+  ],
   variants: [
     {
       id: 'v1',
-      title: 'Default',
-      price: 99.99,
+      title: 'Default Variant',
+      price: '99.99',
       available: true,
-      sku: 'SKU123',
+      sku: 'TEST-SKU-1',
+      optionValues: ['Default'],
+      inventory: { quantity: 10, policy: 'continue' },
     },
   ],
   metafields: {},
   vendor: 'Test Vendor',
   productType: 'Test Type',
   tags: ['test', 'product'],
+  options: [{ name: 'Default', values: ['Default'] }],
+  collections: [123],
 };
 
-const mockRelatedProducts = [
+const mockRelatedProducts: Product[] = [
   {
     id: '2',
-    handle: 'related-product',
-    title: 'Related Product',
-    price: 79.99,
-    images: [{ src: '/related-image.jpg', alt: 'Related Image' }],
+    handle: 'related-product-1',
+    title: 'Related Product 1',
+    description: 'Related product description',
+    price: '79.99',
+    compareAtPrice: '89.99',
+    images: [{ src: '/images/related-1.jpg', alt: 'Related Product 1' }],
     available: true,
+    variants: [
+      {
+        id: 'v2',
+        title: 'Default Variant',
+        price: '79.99',
+        available: true,
+        sku: 'REL-SKU-1',
+        optionValues: ['Default'],
+        inventory: { quantity: 5, policy: 'continue' },
+      },
+    ],
+    options: [{ name: 'Default', values: ['Default'] }],
+    collections: [123],
+    metafields: {},
+    vendor: 'Test Vendor',
+    productType: 'Test Type',
+    tags: ['related'],
+  },
+  {
+    id: '3',
+    handle: 'related-product-2',
+    title: 'Related Product 2',
+    description: 'Related product description',
+    price: '89.99',
+    compareAtPrice: '99.99',
+    images: [{ src: '/images/related-2.jpg', alt: 'Related Product 2' }],
+    available: true,
+    variants: [
+      {
+        id: 'v3',
+        title: 'Default Variant',
+        price: '89.99',
+        available: true,
+        sku: 'REL-SKU-2',
+        optionValues: ['Default'],
+        inventory: { quantity: 8, policy: 'continue' },
+      },
+    ],
+    options: [{ name: 'Default', values: ['Default'] }],
+    collections: [123],
+    metafields: {},
+    vendor: 'Test Vendor',
+    productType: 'Test Type',
+    tags: ['related'],
   },
 ];
 
@@ -195,7 +260,85 @@ describe('Product Templates', () => {
     expect(screen.getByTestId('mock-add-to-cart')).toBeInTheDocument();
   });
 
-  test('ProductTemplateManager selects the correct template based on template suffix', () => {
+  test('EnhancedProductTemplate renders correctly', () => {
+    // Create a product with color variants for testing
+    const enhancedProduct: Product = {
+      ...mockProduct,
+      options: [
+        { name: 'Color', values: ['Red', 'Blue', 'Black'] },
+        { name: 'Size', values: ['S', 'M', 'L'] }
+      ],
+      variants: [
+        {
+          id: 'v1',
+          title: 'Red / S',
+          price: '99.99',
+          available: true,
+          sku: 'TEST-RED-S',
+          optionValues: ['Red', 'S'],
+          inventory: { quantity: 5, policy: 'continue' },
+        },
+        {
+          id: 'v2',
+          title: 'Blue / M',
+          price: '109.99',
+          available: true,
+          sku: 'TEST-BLUE-M',
+          optionValues: ['Blue', 'M'],
+          inventory: { quantity: 3, policy: 'continue' },
+        },
+        {
+          id: 'v3',
+          title: 'Black / L',
+          price: '119.99',
+          available: true,
+          sku: 'TEST-BLACK-L',
+          optionValues: ['Black', 'L'],
+          inventory: { quantity: 7, policy: 'continue' },
+        },
+      ],
+      // Add images for each color
+      images: [
+        { src: '/images/red-bike.jpg', alt: 'Red Bike' },
+        { src: '/images/blue-bike.jpg', alt: 'Blue Bike' },
+        { src: '/images/black-bike.jpg', alt: 'Black Bike' },
+      ],
+    };
+    
+    // Mock the EnhancedProductTemplate to test its functionality
+    vi.mock('../EnhancedProductTemplate', () => {
+      const actual = vi.importActual('../EnhancedProductTemplate');
+      return {
+        __esModule: true,
+        default: actual,
+      };
+    });
+    
+    const { default: ActualEnhancedTemplate } = require('../EnhancedProductTemplate');
+    
+    render(
+      <ActualEnhancedTemplate
+        product={enhancedProduct}
+        relatedProducts={mockRelatedProducts}
+      />
+    );
+    
+    // Test that the product title is rendered
+    expect(screen.getByText('Test Product')).toBeInTheDocument();
+    
+    // Test that the price is displayed
+    expect(screen.getByText(/99\.99/)).toBeInTheDocument();
+    
+    // Test that variant options are displayed
+    expect(screen.getByText(/Color/)).toBeInTheDocument();
+    expect(screen.getByText(/Size/)).toBeInTheDocument();
+    
+    // Reset mocks
+    vi.resetModules();
+    vi.resetAllMocks();
+  });
+
+  test('ProductTemplateManager uses EnhancedProductTemplate for all products regardless of template suffix', () => {
     // Test with bike template suffix
     const bikeProduct = {
       ...mockProduct,
@@ -255,9 +398,13 @@ describe('Product Templates', () => {
     );
     
     expect(screen.getByText('Test Product')).toBeInTheDocument();
+    
+    // Verify that the EnhancedProductTemplate is being used for all products
+    // by checking for elements that are unique to the EnhancedProductTemplate
+    expect(screen.queryByTestId('mock-image-gallery')).not.toBeInTheDocument();
   });
 
-  test('ProductTemplateManager selects the correct template based on product type', () => {
+  test('ProductTemplateManager uses EnhancedProductTemplate for all products regardless of product type', () => {
     // Test with bike product type
     const bikeProduct = {
       ...mockProduct,
@@ -317,5 +464,9 @@ describe('Product Templates', () => {
     );
     
     expect(screen.getByText('Test Product')).toBeInTheDocument();
+    
+    // Verify that the EnhancedProductTemplate is being used for all products
+    // by checking for elements that are unique to the EnhancedProductTemplate
+    expect(screen.queryByTestId('mock-image-gallery')).not.toBeInTheDocument();
   });
 });
